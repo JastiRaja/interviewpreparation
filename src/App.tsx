@@ -76,7 +76,7 @@ export default function LearningApp() {
   };
 
   const [activeModule, setActiveModule] = useState<Module>(getModuleFromURL());
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  // const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Set initial URL if empty
   useEffect(() => {
