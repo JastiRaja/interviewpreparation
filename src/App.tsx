@@ -186,20 +186,20 @@ export default function LearningApp() {
           {/* Home Button */}
           <button
             onClick={() => {
-              handleModuleChange("home");
+              handleModuleChange("tailwind");
             }}
             className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all min-w-0 flex-1 ${
-              activeModule === "home"
+              activeModule === "tailwind"
                 ? "bg-gradient-to-b from-blue-100 to-purple-100 text-blue-700 scale-105 font-semibold"
                 : "text-gray-600 active:bg-gray-100"
             }`}
-            aria-label="Home"
+            aria-label="Tailwind"
           >
-            <span className="text-xl sm:text-2xl mb-0.5">{navItems.find(i => i.id === "home")?.icon || "🏠"}</span>
-            <span className="text-[10px] sm:text-xs font-medium">Home</span>
+            <span className="text-xl sm:text-2xl mb-0.5">{navItems.find(i => i.id === "tailwind")?.icon || "🏠"}</span>
+            <span className="text-[10px] sm:text-xs font-medium">Tailwind</span>
           </button>
           {navItems
-            .filter((item) => item.id !== "home")
+            .filter((item) => item.id !== "tailwind")
             .slice(0, 5)
             .map((item) => (
               <button
