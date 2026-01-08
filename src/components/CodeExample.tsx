@@ -48,8 +48,8 @@ export default function CodeExample({
             </>
           )}
         </button>
-        <pre className="p-3 sm:p-4 md:p-6 bg-gray-900 text-gray-100 overflow-x-auto w-full max-w-full">
-          <code className="text-xs sm:text-sm font-mono whitespace-pre overflow-x-auto block">{code}</code>
+        <pre className="p-3 sm:p-4 md:p-6 bg-gray-900 text-gray-100 overflow-x-auto w-full max-w-full" style={{ maxWidth: '100%' }}>
+          <code className="text-xs sm:text-sm font-mono whitespace-pre overflow-x-auto block" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>{code}</code>
         </pre>
       </div>
     </div>

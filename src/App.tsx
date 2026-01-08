@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactModule from "./components/ReactModule";
 import TypeScriptModule from "./components/TypeScriptModule";
@@ -55,11 +55,54 @@ const navItems: NavItem[] = [
 ];
 
 export default function LearningApp() {
-  const [activeModule, setActiveModule] = useState<Module>("home");
+  // Initialize from URL or default to home
+  const getModuleFromURL = (): Module => {
+    const hash = window.location.hash.slice(1); // Remove #
+    if (hash.startsWith('/')) {
+      const path = hash.slice(1).split('/')[0]; // Get first path segment
+      const validModules: Module[] = ["home", "react", "typescript", "nodejs", "git", "nextjs"];
+      if (validModules.includes(path as Module)) {
+        return path as Module;
+      }
+    }
+    return "home";
+  };
+
+  const [activeModule, setActiveModule] = useState<Module>(getModuleFromURL());
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Set initial URL if empty
+  useEffect(() => {
+    if (!window.location.hash || window.location.hash === '#') {
+      window.history.replaceState(null, "", "#/");
+    }
+  }, []);
+
+  // Update URL when module changes
+  useEffect(() => {
+    const newHash = activeModule === "home" ? "#/" : `#/${activeModule}`;
+    if (window.location.hash !== newHash && !window.location.hash.includes('?')) {
+      window.history.replaceState(null, "", newHash);
+    }
+  }, [activeModule]);
+
+  // Listen for browser back/forward buttons
+  useEffect(() => {
+    const handleHashChange = () => {
+      const module = getModuleFromURL();
+      setActiveModule(module);
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
 
   const handleModuleChange = (moduleId: Module) => {
     setActiveModule(moduleId);
+    // Update URL - clear query params when switching modules
+    const newHash = moduleId === "home" ? "#/" : `#/${moduleId}`;
+    window.history.pushState(null, "", newHash);
+    
     if (window.innerWidth < 1024) {
       setTimeout(() => setSidebarOpen(false), 0);
     }
@@ -83,7 +126,7 @@ export default function LearningApp() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 w-full max-w-full overflow-x-hidden">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
@@ -127,14 +170,14 @@ export default function LearningApp() {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -280, opacity: 0 }}
               transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
-              className="bg-white border-r border-gray-200 shadow-sm overflow-y-auto w-70 min-w-[280px] h-[calc(100vh-64px)] sm:h-[calc(100vh-72px)] lg:h-[calc(100vh-80px)] fixed lg:relative z-50 lg:z-auto top-[64px] sm:top-[72px] lg:top-0"
+              className="bg-white border-r border-gray-200 shadow-sm overflow-y-auto overflow-x-hidden w-70 min-w-[280px] h-[calc(100vh-64px)] sm:h-[calc(100vh-72px)] lg:h-[calc(100vh-80px)] fixed lg:relative z-50 lg:z-auto top-[64px] sm:top-[72px] lg:top-0"
             >
               <nav className="p-4 space-y-2">
                 {navItems.map((item) => (
                   <motion.button
                     key={item.id}
                     onClick={() => {
-                      setActiveModule(item.id);
+                      handleModuleChange(item.id);
                       // Close sidebar on mobile after selection
                       if (window.innerWidth < 1024) {
                         setTimeout(() => setSidebarOpen(false), 0);
@@ -171,7 +214,7 @@ export default function LearningApp() {
         </AnimatePresence>
 
         {/* Main Content */}
-        <main className={`flex-1 p-3 sm:p-4 md:p-6 lg:p-8 transition-all duration-300 ${sidebarOpen ? 'lg:ml-0' : 'ml-0'} w-full max-w-full overflow-x-hidden pb-24 md:pb-0`}>
+        <main className={`flex-1 p-3 sm:p-4 md:p-6 lg:p-8 transition-all duration-300 ${sidebarOpen ? 'lg:ml-0' : 'ml-0'} w-full max-w-full overflow-x-hidden overflow-y-auto pb-24 md:pb-0`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={activeModule}

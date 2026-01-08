@@ -1,12 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CodeExample from "./CodeExample";
 import TheorySection from "./TheorySection";
 
 export default function GitModule() {
-  const [activeSection, setActiveSection] = useState("basics");
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["basics"]));
-  const [activeConcept, setActiveConcept] = useState<string | null>(null);
+  // Initialize from URL or defaults
+  const getStateFromURL = () => {
+    const hash = window.location.hash;
+    const urlParams = new URLSearchParams(hash.split('?')[1] || '');
+    const section = urlParams.get('section') || "basics";
+    const concept = urlParams.get('concept') || null;
+    return { section, concept };
+  };
+
+  const urlState = getStateFromURL();
+  const [activeSection, setActiveSection] = useState(urlState.section);
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set([urlState.section]));
+  const [activeConcept, setActiveConcept] = useState<string | null>(urlState.concept);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Update URL when section/concept changes
+  useEffect(() => {
+    const hash = window.location.hash.split('?')[0];
+    const params = new URLSearchParams();
+    if (activeSection) params.set('section', activeSection);
+    if (activeConcept) params.set('concept', activeConcept);
+    const newHash = params.toString() ? `${hash}?${params.toString()}` : hash;
+    if (window.location.hash !== newHash) {
+      window.history.replaceState(null, "", newHash);
+    }
+  }, [activeSection, activeConcept]);
+
+  // Listen for browser back/forward
+  useEffect(() => {
+    const handleHashChange = () => {
+      const state = getStateFromURL();
+      setActiveSection(state.section);
+      setActiveConcept(state.concept);
+      setExpandedSections(new Set([state.section]));
+    };
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
 
   const sections = [
     { 
@@ -61,6 +95,11 @@ export default function GitModule() {
       } else {
         newSet.add(sectionId);
         setActiveSection(sectionId);
+        // Update URL
+        const hash = window.location.hash.split('?')[0];
+        const params = new URLSearchParams(window.location.hash.split('?')[1] || '');
+        params.set('section', sectionId);
+        window.history.replaceState(null, "", `${hash}?${params.toString()}`);
       }
       return newSet;
     });
@@ -70,6 +109,14 @@ export default function GitModule() {
     setActiveSection(sectionId);
     setActiveConcept(conceptId);
     setExpandedSections((prev) => new Set(prev).add(sectionId));
+    
+    // Update URL
+    const hash = window.location.hash.split('?')[0];
+    const params = new URLSearchParams();
+    params.set('section', sectionId);
+    params.set('concept', conceptId);
+    window.history.pushState(null, "", `${hash}?${params.toString()}`);
+    
     // Close sidebar on mobile after selection
     if (window.innerWidth < 768) {
       setTimeout(() => setSidebarOpen(false), 0);
@@ -81,6 +128,38 @@ export default function GitModule() {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }, 100);
+  };
+
+  // Get all concepts in order for navigation
+  const getAllConcepts = () => {
+    const allConcepts: Array<{ sectionId: string; conceptId: string; number: number; title: string }> = [];
+    sections.forEach(section => {
+      section.concepts.forEach(concept => {
+        allConcepts.push({
+          sectionId: section.id,
+          conceptId: concept.id,
+          number: concept.number,
+          title: concept.title
+        });
+      });
+    });
+    return allConcepts.sort((a, b) => a.number - b.number);
+  };
+
+  // Navigate to next/previous concept
+  const navigateConcept = (direction: 'next' | 'prev') => {
+    const allConcepts = getAllConcepts();
+    if (!activeConcept) return;
+    
+    const currentIndex = allConcepts.findIndex(c => c.conceptId === activeConcept);
+    if (currentIndex === -1) return;
+    
+    const newIndex = direction === 'next' 
+      ? (currentIndex + 1) % allConcepts.length
+      : (currentIndex - 1 + allConcepts.length) % allConcepts.length;
+    
+    const newConcept = allConcepts[newIndex];
+    handleConceptClick(newConcept.sectionId, newConcept.conceptId);
   };
 
   return (
@@ -121,8 +200,9 @@ export default function GitModule() {
         fixed md:sticky top-[64px] sm:top-[72px] md:top-0 left-0 z-40
         w-[280px] sm:w-64 md:w-64 flex-shrink-0 
         bg-white rounded-xl shadow-md p-2 sm:p-3 
-        overflow-y-auto h-[calc(100vh-64px)] sm:h-[calc(100vh-72px)] md:max-h-[calc(100vh-120px)] 
+        overflow-y-auto overflow-x-hidden h-[calc(100vh-64px-80px)] sm:h-[calc(100vh-72px-80px)] md:max-h-[calc(100vh-120px)] 
         transition-transform duration-300 ease-in-out
+        pb-20 md:pb-0
       `}>
         <div className="mb-2 sm:mb-3 pb-2 sm:pb-3 border-b border-gray-200">
           <h2 className="text-lg sm:text-xl font-bold text-gray-900">Git & GitHub</h2>
@@ -181,8 +261,51 @@ export default function GitModule() {
       </div>
 
       {/* Right Content Area */}
-      <div className="flex-1 min-w-0 max-w-full mt-0 md:mt-0">
-        <div className="w-full max-w-full overflow-x-hidden px-0">
+      <div className="flex-1 min-w-0 max-w-full mt-0 md:mt-0 relative">
+        {/* Mobile: View All Concepts Button - Always Visible */}
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="md:hidden fixed top-[72px] right-3 z-50 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-2 rounded-full shadow-lg hover:shadow-xl transition-all text-xs sm:text-sm font-semibold flex items-center gap-1.5"
+          aria-label="View all concepts"
+        >
+          <span className="text-base">📚</span>
+          <span className="hidden sm:inline">All Concepts</span>
+        </button>
+
+        {/* Concept Navigation Bar - Mobile Only */}
+        {activeConcept && (
+          <div className="md:hidden fixed top-[120px] left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm px-3 py-2">
+            <div className="flex items-center justify-between max-w-full">
+              <button
+                onClick={() => navigateConcept('prev')}
+                className="flex items-center gap-1 px-2 py-1 text-xs text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                aria-label="Previous concept"
+              >
+                <span>←</span>
+                <span className="hidden sm:inline">Prev</span>
+              </button>
+              <div className="flex-1 text-center px-2">
+                <span className="text-xs text-gray-500">Concept</span>
+                <span className="text-sm font-semibold text-gray-900 ml-1">
+                  {getAllConcepts().find(c => c.conceptId === activeConcept)?.number || ''}
+                </span>
+                <span className="text-xs text-gray-500 ml-1">
+                  / {getAllConcepts().length}
+                </span>
+              </div>
+              <button
+                onClick={() => navigateConcept('next')}
+                className="flex items-center gap-1 px-2 py-1 text-xs text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                aria-label="Next concept"
+              >
+                <span className="hidden sm:inline">Next</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className={`w-full max-w-full overflow-x-hidden px-0 ${activeConcept ? 'pt-16 md:pt-0' : 'pt-0'}`}>
           {activeSection === "basics" && <GitBasics activeConcept={activeConcept} />}
           {activeSection === "branching" && <BranchingMerging activeConcept={activeConcept} />}
           {activeSection === "remote" && <RemoteRepositories activeConcept={activeConcept} />}
