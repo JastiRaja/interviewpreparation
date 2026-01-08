@@ -57,7 +57,6 @@ const navItems: NavItem[] = [
 export default function LearningApp() {
   const [activeModule, setActiveModule] = useState<Module>("home");
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [showBottomNav, setShowBottomNav] = useState(true);
 
   const handleModuleChange = (moduleId: Module) => {
     setActiveModule(moduleId);
@@ -194,7 +193,6 @@ export default function LearningApp() {
           <button
             onClick={() => {
               handleModuleChange("home");
-              setShowBottomNav(true);
             }}
             className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all min-w-0 flex-1 ${
               activeModule === "home"
@@ -212,10 +210,9 @@ export default function LearningApp() {
             .map((item) => (
               <button
                 key={item.id}
-                onClick={() => {
-                  handleModuleChange(item.id);
-                  setShowBottomNav(true);
-                }}
+            onClick={() => {
+              handleModuleChange(item.id);
+            }}
                 className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all min-w-0 flex-1 ${
                   activeModule === item.id
                     ? "bg-gradient-to-b from-blue-100 to-purple-100 text-blue-700 scale-105 font-semibold"
