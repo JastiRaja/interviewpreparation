@@ -110,9 +110,9 @@ export default function LearningApp() {
     const newHash = moduleId === "home" ? "#/" : `#/${moduleId}`;
     window.history.pushState(null, "", newHash);
     
-    if (window.innerWidth < 1024) {
-      setTimeout(() => setSidebarOpen(false), 0);
-    }
+    // if (window.innerWidth < 1024) {
+    //   setTimeout(() => setSidebarOpen(false), 0);
+    // }
   };
 
   const renderContent = (onNavigate?: (moduleId: Module) => void) => {
