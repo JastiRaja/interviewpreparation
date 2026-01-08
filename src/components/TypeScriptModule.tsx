@@ -4,105 +4,356 @@ import TheorySection from "./TheorySection";
 
 export default function TypeScriptModule() {
   const [activeSection, setActiveSection] = useState("fundamentals");
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["fundamentals"]));
+  const [activeConcept, setActiveConcept] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const sections = [
-    { id: "fundamentals", title: "Type System", icon: "🔰", count: "1-8" },
-    { id: "custom", title: "Custom Types", icon: "🧱", count: "9-13" },
-    { id: "composition", title: "Type Composition", icon: "🧠", count: "14-19" },
-    { id: "generics", title: "Generics", icon: "🏗️", count: "20-23" },
-    { id: "utilities", title: "Utility Types", icon: "🧰", count: "24-33" },
-    { id: "narrowing", title: "Type Narrowing", icon: "🔐", count: "34-38" },
-    { id: "meta", title: "Meta Types", icon: "🧩", count: "39-43" },
-    { id: "oop", title: "OOP TS", icon: "🧱", count: "44-48" },
-    { id: "modules", title: "Modules", icon: "📦", count: "49-54" },
-    { id: "compiler", title: "Compiler", icon: "🛠️", count: "55-59" },
-    { id: "interop", title: "JS Interop", icon: "🌉", count: "60-62" },
-    { id: "expert", title: "Expert", icon: "🚀", count: "63-66" },
+    { 
+      id: "fundamentals", 
+      title: "Type System", 
+      icon: "🔰", 
+      count: "1-8",
+      concepts: [
+        { id: "1", title: "Static Typing", number: 1 },
+        { id: "2", title: "Type Annotations", number: 2 },
+        { id: "3", title: "Type Inference", number: 3 },
+        { id: "4", title: "Type Compatibility (Structural Typing)", number: 4 },
+        { id: "5", title: "Any vs Unknown", number: 5 },
+        { id: "6", title: "Void vs Never", number: 6 },
+        { id: "7", title: "Literal Types", number: 7 },
+        { id: "8", title: "Type Compatibility", number: 8 },
+      ]
+    },
+    { 
+      id: "custom", 
+      title: "Custom Types", 
+      icon: "🧱", 
+      count: "9-13",
+      concepts: [
+        { id: "9", title: "Type Aliases", number: 9 },
+        { id: "10", title: "Interfaces", number: 10 },
+        { id: "11", title: "Interface vs Type", number: 11 },
+        { id: "12", title: "Readonly Properties", number: 12 },
+        { id: "13", title: "Optional Properties (?)", number: 13 },
+      ]
+    },
+    { 
+      id: "composition", 
+      title: "Type Composition", 
+      icon: "🧠", 
+      count: "14-19",
+      concepts: [
+        { id: "14", title: "Union Types (|)", number: 14 },
+        { id: "15", title: "Intersection Types (&)", number: 15 },
+        { id: "16", title: "Discriminated Unions", number: 16 },
+        { id: "17", title: "Index Signatures", number: 17 },
+        { id: "18", title: "Mapped Types", number: 18 },
+        { id: "19", title: "Template Literal Types", number: 19 },
+      ]
+    },
+    { 
+      id: "generics", 
+      title: "Generics", 
+      icon: "🏗️", 
+      count: "20-23",
+      concepts: [
+        { id: "20", title: "Generics", number: 20 },
+        { id: "21", title: "Generic Constraints", number: 21 },
+        { id: "22", title: "Default Generic Types", number: 22 },
+        { id: "23", title: "Generic Utility Patterns", number: 23 },
+      ]
+    },
+    { 
+      id: "utilities", 
+      title: "Utility Types", 
+      icon: "🧰", 
+      count: "24-33",
+      concepts: [
+        { id: "24", title: "Partial", number: 24 },
+        { id: "25", title: "Required", number: 25 },
+        { id: "26", title: "Readonly", number: 26 },
+        { id: "27", title: "Pick", number: 27 },
+        { id: "28", title: "Omit", number: 28 },
+        { id: "29", title: "Record", number: 29 },
+        { id: "30", title: "Exclude / Extract", number: 30 },
+        { id: "31", title: "NonNullable", number: 31 },
+        { id: "32", title: "ReturnType / Parameters", number: 32 },
+        { id: "33", title: "Utility Type Patterns", number: 33 },
+      ]
+    },
+    { 
+      id: "narrowing", 
+      title: "Type Narrowing", 
+      icon: "🔐", 
+      count: "34-38",
+      concepts: [
+        { id: "34", title: "Type Guards", number: 34 },
+        { id: "35", title: "Custom Type Guards (is)", number: 35 },
+        { id: "36", title: "Type Assertions (as)", number: 36 },
+        { id: "37", title: "Type Predicates", number: 37 },
+        { id: "38", title: "Narrowing Patterns", number: 38 },
+      ]
+    },
+    { 
+      id: "meta", 
+      title: "Meta Types", 
+      icon: "🧩", 
+      count: "39-43",
+      concepts: [
+        { id: "39", title: "Conditional Types", number: 39 },
+        { id: "40", title: "Infer Keyword", number: 40 },
+        { id: "41", title: "Template Literal Types", number: 41 },
+        { id: "42", title: "Recursive Types", number: 42 },
+        { id: "43", title: "Type-Level Programming", number: 43 },
+      ]
+    },
+    { 
+      id: "oop", 
+      title: "OOP TS", 
+      icon: "🧱", 
+      count: "44-48",
+      concepts: [
+        { id: "44", title: "Classes", number: 44 },
+        { id: "45", title: "Inheritance", number: 45 },
+        { id: "46", title: "Abstract Classes", number: 46 },
+        { id: "47", title: "Interfaces in Classes", number: 47 },
+        { id: "48", title: "Access Modifiers", number: 48 },
+      ]
+    },
+    { 
+      id: "modules", 
+      title: "Modules", 
+      icon: "📦", 
+      count: "49-54",
+      concepts: [
+        { id: "49", title: "Module System", number: 49 },
+        { id: "50", title: "Export / Import", number: 50 },
+        { id: "51", title: "Namespace", number: 51 },
+        { id: "52", title: "Declaration Merging", number: 52 },
+        { id: "53", title: "Ambient Modules", number: 53 },
+        { id: "54", title: "Module Augmentation", number: 54 },
+      ]
+    },
+    { 
+      id: "compiler", 
+      title: "Compiler", 
+      icon: "🛠️", 
+      count: "55-59",
+      concepts: [
+        { id: "55", title: "tsconfig.json", number: 55 },
+        { id: "56", title: "Compiler Options", number: 56 },
+        { id: "57", title: "Type Checking", number: 57 },
+        { id: "58", title: "Strict Mode", number: 58 },
+        { id: "59", title: "Type Definitions", number: 59 },
+      ]
+    },
+    { 
+      id: "interop", 
+      title: "JS Interop", 
+      icon: "🌉", 
+      count: "60-62",
+      concepts: [
+        { id: "60", title: "JavaScript Interop", number: 60 },
+        { id: "61", title: "Type Declarations", number: 61 },
+        { id: "62", title: "Gradual Typing", number: 62 },
+      ]
+    },
+    { 
+      id: "expert", 
+      title: "Expert", 
+      icon: "🚀", 
+      count: "63-66",
+      concepts: [
+        { id: "63", title: "Advanced Patterns", number: 63 },
+        { id: "64", title: "Type Manipulation", number: 64 },
+        { id: "65", title: "Branded Types", number: 65 },
+        { id: "66", title: "Complex Type Challenges", number: 66 },
+      ]
+    },
   ];
+
+  const toggleSection = (sectionId: string) => {
+    setExpandedSections((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(sectionId)) {
+        newSet.delete(sectionId);
+      } else {
+        newSet.add(sectionId);
+        setActiveSection(sectionId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleConceptClick = (sectionId: string, conceptId: string) => {
+    setActiveSection(sectionId);
+    setActiveConcept(conceptId);
+    setExpandedSections((prev) => new Set(prev).add(sectionId));
+    // Close sidebar on mobile after selection
+    if (window.innerWidth < 768) {
+      setTimeout(() => setSidebarOpen(false), 0);
+    }
+    
+    setTimeout(() => {
+      const element = document.getElementById(`concept-${conceptId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
 
   const renderContent = () => {
     switch (activeSection) {
       case "fundamentals":
-        return <TypeSystemFundamentals />;
+        return <TypeSystemFundamentals activeConcept={activeConcept} />;
       case "custom":
-        return <CustomTypeDefinitions />;
+        return <CustomTypeDefinitions activeConcept={activeConcept} />;
       case "composition":
-        return <AdvancedTypeComposition />;
+        return <AdvancedTypeComposition activeConcept={activeConcept} />;
       case "generics":
-        return <GenericProgramming />;
+        return <GenericProgramming activeConcept={activeConcept} />;
       case "utilities":
-        return <BuiltInUtilityTypes />;
+        return <BuiltInUtilityTypes activeConcept={activeConcept} />;
       case "narrowing":
-        return <TypeSafetyNarrowing />;
+        return <TypeSafetyNarrowing activeConcept={activeConcept} />;
       case "meta":
-        return <MetaProgrammingTypes />;
+        return <MetaProgrammingTypes activeConcept={activeConcept} />;
       case "oop":
-        return <OOPTypeScript />;
+        return <OOPTypeScript activeConcept={activeConcept} />;
       case "modules":
-        return <ModuleDeclarationSystem />;
+        return <ModuleDeclarationSystem activeConcept={activeConcept} />;
       case "compiler":
-        return <CompilerConfiguration />;
+        return <CompilerConfiguration activeConcept={activeConcept} />;
       case "interop":
-        return <JSInterop />;
+        return <JSInterop activeConcept={activeConcept} />;
       case "expert":
-        return <ExpertLevelConcepts />;
+        return <ExpertLevelConcepts activeConcept={activeConcept} />;
       default:
-        return <TypeSystemFundamentals />;
+        return <TypeSystemFundamentals activeConcept={activeConcept} />;
     }
   };
 
   return (
-    <div className="space-y-6 w-full max-w-full overflow-x-hidden">
-      <div className="w-full">
-        <h2 className="text-4xl font-bold mb-2 text-gray-900 break-words">
-          TypeScript - Complete Guide
-        </h2>
-        <p className="text-gray-600 break-words">
-          Master all TypeScript concepts - TypeScript-unique features only
+    <div className="flex flex-col md:flex-row gap-3 md:gap-4 h-full w-full relative">
+      {/* Mobile Menu Button - Only show on larger mobile/tablet */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="hidden sm:flex md:hidden fixed top-[72px] left-3 z-50 bg-blue-500 text-white p-2 rounded-lg shadow-lg hover:bg-blue-600 transition-colors"
+        aria-label="Toggle sidebar"
+      >
+        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      {/* Mobile Floating Button for Small Screens */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="sm:hidden fixed bottom-20 right-4 z-40 bg-blue-500 text-white p-3 rounded-full shadow-2xl hover:shadow-3xl transition-all hover:scale-110 active:scale-95"
+        aria-label="Toggle module menu"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40 top-[64px] sm:top-[72px]"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Left Sidebar - Vertical Navigation - Responsive */}
+      <div className={`
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        fixed md:sticky top-[64px] sm:top-[72px] md:top-0 left-0 z-40
+        w-[280px] sm:w-64 md:w-64 flex-shrink-0 
+        bg-white rounded-xl shadow-md p-2 sm:p-3 
+        overflow-y-auto h-[calc(100vh-64px)] sm:h-[calc(100vh-72px)] md:max-h-[calc(100vh-120px)] 
+        transition-transform duration-300 ease-in-out
+      `}>
+        <div className="mb-2 sm:mb-3 pb-2 sm:pb-3 border-b border-gray-200">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900">TypeScript</h2>
+          <p className="text-xs text-gray-600 mt-0.5">
+            Complete Guide
         </p>
       </div>
 
-      {/* Section Tabs - Scrollable */}
-      <div className="overflow-x-auto w-full">
-        <div className="flex gap-2 border-b border-gray-200 min-w-max pb-2">
-          {sections.map((section) => (
+        <div className="space-y-1.5">
+          {sections.map((section) => {
+            const isExpanded = expandedSections.has(section.id);
+            const isActive = activeSection === section.id;
+
+            return (
+              <div key={section.id} className="border border-gray-200 rounded-md overflow-hidden">
             <button
-              key={section.id}
-              onClick={() => setActiveSection(section.id)}
-              className={`px-4 py-2 font-semibold transition-colors border-b-2 whitespace-nowrap ${
-                activeSection === section.id
-                  ? "border-blue-500 text-blue-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              <span className="mr-2">{section.icon}</span>
-              {section.title}
-              <span className="ml-2 text-xs opacity-75">
-                ({section.count})
+                  onClick={() => toggleSection(section.id)}
+                  className={`w-full px-3 py-2 text-left font-medium transition-colors flex items-center justify-between text-sm ${
+                    isActive
+                      ? "bg-blue-50 text-blue-700 border-l-4 border-blue-500"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                    <span className="text-base flex-shrink-0">{section.icon}</span>
+                    <span className="truncate">{section.title}</span>
+                    <span className="text-xs opacity-75 flex-shrink-0">({section.count})</span>
+                  </div>
+                  <span className={`transition-transform text-xs flex-shrink-0 ml-1 ${isExpanded ? "rotate-180" : ""}`}>
+                    ▼
               </span>
+                </button>
+
+                {isExpanded && (
+                  <div className="bg-gray-50 border-t border-gray-200">
+                    {section.concepts.map((concept) => (
+                      <button
+                        key={concept.id}
+                        onClick={() => handleConceptClick(section.id, concept.id)}
+                        className={`w-full px-4 py-1.5 text-left text-xs transition-colors flex items-center gap-1.5 ${
+                          activeConcept === concept.id
+                            ? "bg-blue-100 text-blue-700 font-semibold border-l-4 border-blue-500"
+                            : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                        }`}
+                      >
+                        <span className="text-blue-500 font-semibold text-xs flex-shrink-0">#{concept.number}</span>
+                        <span className="flex-1 text-left truncate">{concept.title}</span>
             </button>
           ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Content */}
-      <div className="mt-6 w-full max-w-full overflow-x-hidden">{renderContent()}</div>
+      {/* Right Content Area */}
+      <div className="flex-1 min-w-0 max-w-full mt-0 md:mt-0">
+        <div className="w-full max-w-full overflow-x-hidden px-0">
+          {renderContent()}
+        </div>
+      </div>
     </div>
   );
 }
 
 // ========== TYPE SYSTEM FUNDAMENTALS (1-8) ==========
-function TypeSystemFundamentals() {
+function TypeSystemFundamentals({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
-      <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🔰 Type System Fundamentals</h3>
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
+      <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl p-4 sm:p-5 md:p-6 text-white w-full max-w-full overflow-hidden">
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🔰 Type System Fundamentals</h3>
         <p className="text-blue-100 break-words">
           Core TypeScript type system concepts
         </p>
       </div>
 
       <ConceptCard
+        id="1"
         number={1}
         title="Static Typing"
         priority="🔥"
@@ -149,6 +400,7 @@ addJS("5", 10); // Returns "510" (string concatenation) - runtime bug!`}
       </ConceptCard>
 
       <ConceptCard
+        id="2"
         number={2}
         title="Type Annotations"
         priority="🔥"
@@ -200,6 +452,7 @@ let inferred = "Hello"; // Type: string (inferred)`}
       </ConceptCard>
 
       <ConceptCard
+        id="3"
         number={3}
         title="Type Inference"
         priority="🔥"
@@ -258,6 +511,7 @@ processNumber(value); // TypeScript knows value is number`}
       </ConceptCard>
 
       <ConceptCard
+        id="4"
         number={4}
         title="Type Compatibility (Structural Typing)"
         theory={{
@@ -317,6 +571,7 @@ let incomplete: Point = { x: 1 }; // ❌ Error: Property 'y' is missing`}
       </ConceptCard>
 
       <ConceptCard
+        id="5"
         number={5}
         title="Any vs Unknown"
         priority="🔥"
@@ -376,6 +631,7 @@ if (typeof data === "object" && data !== null && "name" in data) {
       </ConceptCard>
 
       <ConceptCard
+        id="6"
         number={6}
         title="Void vs Never"
         theory={{
@@ -440,6 +696,7 @@ function handleStatus(status: Status) {
       </ConceptCard>
 
       <ConceptCard
+        id="7"
         number={7}
         title="Literal Types"
         theory={{
@@ -496,6 +753,7 @@ let config: Config = {
       </ConceptCard>
 
       <ConceptCard
+        id="8"
         number={8}
         title="Type Compatibility"
         theory={{
@@ -549,15 +807,16 @@ let handler3: Handler = (x: string) => { }; // ❌ Error - incompatible param ty
 // Continue with other sections... (I'll add more sections)
 // Due to length, I'll create the structure and add key concepts
 
-function CustomTypeDefinitions() {
+function CustomTypeDefinitions({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-green-500 to-teal-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🧱 Custom Type Definitions</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🧱 Custom Type Definitions</h3>
         <p className="text-green-100 break-words">Creating your own types</p>
       </div>
 
       <ConceptCard
+        id="9"
         number={9}
         title="Type Aliases"
         priority="🔥"
@@ -612,6 +871,7 @@ let result: Result<User> = { success: true, data: user };`}
       </ConceptCard>
 
       <ConceptCard
+        id="10"
         number={10}
         title="Interfaces"
         priority="🔥"
@@ -673,6 +933,7 @@ interface Config {
       </ConceptCard>
 
       <ConceptCard
+        id="11"
         number={11}
         title="Interface vs Type"
         priority="🔥"
@@ -734,6 +995,7 @@ interface ExtendedUser extends User {
       </ConceptCard>
 
       <ConceptCard
+        id="12"
         number={12}
         title="Readonly Properties"
         theory={{
@@ -785,6 +1047,7 @@ let point: Point = { x: 1, y: 2 };
       </ConceptCard>
 
       <ConceptCard
+        id="13"
         number={13}
         title="Optional Properties (?)"
         priority="🔥"
@@ -839,15 +1102,16 @@ const email = user.email?.toUpperCase(); // Safe access`}
   );
 }
 
-function AdvancedTypeComposition() {
+function AdvancedTypeComposition({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🧠 Advanced Type Composition</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🧠 Advanced Type Composition</h3>
         <p className="text-purple-100 break-words">Combining types in powerful ways</p>
       </div>
 
       <ConceptCard
+        id="14"
         number={14}
         title="Union Types (|)"
         priority="🔥"
@@ -901,6 +1165,7 @@ type MaybeString = string | null | undefined;`}
       </ConceptCard>
 
       <ConceptCard
+        id="15"
         number={15}
         title="Intersection Types (&)"
         priority="🔥"
@@ -958,6 +1223,7 @@ let item: TimestampedNamed = {
       </ConceptCard>
 
       <ConceptCard
+        id="16"
         number={16}
         title="Discriminated Unions"
         priority="🔥"
@@ -1022,6 +1288,7 @@ function handleState(state: State) {
       </ConceptCard>
 
       <ConceptCard
+        id="17"
         number={17}
         title="Index Signatures"
         theory={{
@@ -1080,6 +1347,7 @@ let user: User = {
       </ConceptCard>
 
       <ConceptCard
+        id="18"
         number={18}
         title="Mapped Types"
         theory={{
@@ -1139,6 +1407,7 @@ type StringConfig = Stringify<Config>; // { port: string; host: string }`}
       </ConceptCard>
 
       <ConceptCard
+        id="19"
         number={19}
         title="Template Literal Types"
         theory={{
@@ -1188,15 +1457,16 @@ let width: Width = "100px"; // ✅ OK
   );
 }
 
-function GenericProgramming() {
+function GenericProgramming({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🏗️ Generic Programming</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🏗️ Generic Programming</h3>
         <p className="text-yellow-100 break-words">Reusable type-safe code</p>
       </div>
 
       <ConceptCard
+        id="20"
         number={20}
         title="Generics"
         priority="🔥"
@@ -1259,6 +1529,7 @@ numberContainer.add(2);`}
       </ConceptCard>
 
       <ConceptCard
+        id="21"
         number={21}
         title="Generic Constraints"
         priority="🔥"
@@ -1315,6 +1586,7 @@ function combine<T extends string, U extends number>(a: T, b: U): string {
       </ConceptCard>
 
       <ConceptCard
+        id="22"
         number={22}
         title="Default Generic Types"
         theory={{
@@ -1361,6 +1633,7 @@ let arr2 = createArray<number, number>(42, 5); // Explicit types`}
       </ConceptCard>
 
       <ConceptCard
+        id="23"
         number={23}
         title="Generic Utility Patterns"
         theory={{
@@ -1413,15 +1686,16 @@ type Pick<T, K extends keyof T> = {
   );
 }
 
-function BuiltInUtilityTypes() {
+function BuiltInUtilityTypes({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🧰 Built-in Utility Types</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🧰 Built-in Utility Types</h3>
         <p className="text-cyan-100 break-words">TypeScript's powerful utility types</p>
       </div>
 
       <ConceptCard
+        id="24"
         number={24}
         title="Partial"
         priority="🔥"
@@ -1469,6 +1743,7 @@ updateUser(1, { name: "John", email: "john@example.com" }); // ✅ OK`}
       </ConceptCard>
 
       <ConceptCard
+        id="25"
         number={25}
         title="Required"
         theory={{
@@ -1511,6 +1786,7 @@ function initialize(config: RequiredConfig) {
       </ConceptCard>
 
       <ConceptCard
+        id="26"
         number={26}
         title="Readonly"
         theory={{
@@ -1550,6 +1826,7 @@ let user: ReadonlyUser = { name: "John", age: 30 };
       </ConceptCard>
 
       <ConceptCard
+        id="27"
         number={27}
         title="Pick"
         priority="🔥"
@@ -1597,6 +1874,7 @@ function getPublicProfile(user: User): PublicUser {
       </ConceptCard>
 
       <ConceptCard
+        id="28"
         number={28}
         title="Omit"
         priority="🔥"
@@ -1640,6 +1918,7 @@ type CreateUser = Omit<User, "id" | "password">;
       </ConceptCard>
 
       <ConceptCard
+        id="29"
         number={29}
         title="Record"
         theory={{
@@ -1686,6 +1965,7 @@ type ApiResponse = Record<string, any>;`}
       </ConceptCard>
 
       <ConceptCard
+        id="30"
         number={30}
         title="Exclude / Extract"
         theory={{
@@ -1726,6 +2006,7 @@ type NonNullable<T> = Exclude<T, null | undefined>;`}
       </ConceptCard>
 
       <ConceptCard
+        id="31"
         number={31}
         title="NonNullable"
         theory={{
@@ -1766,6 +2047,7 @@ function process(value: MaybeString) {
       </ConceptCard>
 
       <ConceptCard
+        id="32"
         number={32}
         title="ReturnType / Parameters"
         priority="🔥"
@@ -1815,6 +2097,7 @@ function wrapFunction<T extends (...args: any[]) => any>(
       </ConceptCard>
 
       <ConceptCard
+        id="33"
         number={33}
         title="Utility Type Patterns"
         theory={{
@@ -1859,15 +2142,16 @@ type AsyncReturnType<T> = T extends (...args: any[]) => Promise<infer R>
   );
 }
 
-function TypeSafetyNarrowing() {
+function TypeSafetyNarrowing({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-red-500 to-pink-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🔐 Type Safety & Narrowing</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🔐 Type Safety & Narrowing</h3>
         <p className="text-red-100 break-words">Narrowing types for safety</p>
       </div>
 
       <ConceptCard
+        id="34"
         number={34}
         title="Type Guards"
         priority="🔥"
@@ -1935,6 +2219,7 @@ function move(animal: Bird | Fish) {
       </ConceptCard>
 
       <ConceptCard
+        id="35"
         number={35}
         title="Custom Type Guards (is)"
         priority="🔥"
@@ -1994,6 +2279,7 @@ function handleData(data: unknown) {
       </ConceptCard>
 
       <ConceptCard
+        id="36"
         number={36}
         title="Type Narrowing"
         theory={{
@@ -2043,6 +2329,7 @@ function handle(result: Result) {
       </ConceptCard>
 
       <ConceptCard
+        id="37"
         number={37}
         title="Control Flow Analysis"
         theory={{
@@ -2094,6 +2381,7 @@ function test() {
       </ConceptCard>
 
       <ConceptCard
+        id="38"
         number={38}
         title="Non-null Assertion Operator (!)"
         theory={{
@@ -2139,15 +2427,16 @@ element2?.style.color = "red"; // Safer - checks if exists`}
   );
 }
 
-function MetaProgrammingTypes() {
+function MetaProgrammingTypes({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🧩 Meta-Programming Types</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🧩 Meta-Programming Types</h3>
         <p className="text-indigo-100 break-words">Advanced type manipulation</p>
       </div>
 
       <ConceptCard
+        id="39"
         number={39}
         title="Conditional Types"
         priority="🔥"
@@ -2191,6 +2480,7 @@ type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never;`}
       </ConceptCard>
 
       <ConceptCard
+        id="40"
         number={40}
         title="Infer Keyword"
         priority="🔥"
@@ -2234,6 +2524,7 @@ type FirstArg<T> = T extends (arg: infer A, ...args: any[]) => any ? A : never;`
       </ConceptCard>
 
       <ConceptCard
+        id="41"
         number={41}
         title="Keyof Operator"
         priority="🔥"
@@ -2285,6 +2576,7 @@ type Optional<T> = {
       </ConceptCard>
 
       <ConceptCard
+        id="42"
         number={42}
         title="Lookup Types"
         theory={{
@@ -2337,6 +2629,7 @@ type Pick<T, K extends keyof T> = {
       </ConceptCard>
 
       <ConceptCard
+        id="43"
         number={43}
         title="Template Literal Types"
         theory={{
@@ -2385,15 +2678,16 @@ let width: Width = "100px"; // ✅ OK`}
   );
 }
 
-function OOPTypeScript() {
+function OOPTypeScript({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-emerald-500 to-green-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🧱 Object-Oriented TypeScript</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🧱 Object-Oriented TypeScript</h3>
         <p className="text-emerald-100 break-words">OOP features beyond JavaScript</p>
       </div>
 
       <ConceptCard
+        id="44"
         number={44}
         title="Access Modifiers"
         priority="🔥"
@@ -2453,6 +2747,7 @@ user.name; // ✅ OK - public
       </ConceptCard>
 
       <ConceptCard
+        id="45"
         number={45}
         title="Abstract Classes"
         theory={{
@@ -2512,6 +2807,7 @@ dog.makeSound(); // ✅ OK`}
       </ConceptCard>
 
       <ConceptCard
+        id="46"
         number={46}
         title="Implements Keyword"
         theory={{
@@ -2565,6 +2861,7 @@ class Bird implements Flyable {
       </ConceptCard>
 
       <ConceptCard
+        id="47"
         number={47}
         title="Readonly Class Properties"
         theory={{
@@ -2612,6 +2909,7 @@ let user = new User(1, "John");
       </ConceptCard>
 
       <ConceptCard
+        id="48"
         number={48}
         title="Parameter Properties"
         theory={{
@@ -2676,15 +2974,16 @@ class User3 {
   );
 }
 
-function ModuleDeclarationSystem() {
+function ModuleDeclarationSystem({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-slate-500 to-gray-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">📦 Module & Declaration System</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">📦 Module & Declaration System</h3>
         <p className="text-slate-100 break-words">TypeScript's module system</p>
       </div>
 
       <ConceptCard
+        id="49"
         number={49}
         title="Declaration Files (.d.ts)"
         priority="🔥"
@@ -2732,6 +3031,7 @@ declare function log(message: string): void;`}
       </ConceptCard>
 
       <ConceptCard
+        id="50"
         number={50}
         title="Ambient Declarations"
         theory={{
@@ -2777,6 +3077,7 @@ declare global {
       </ConceptCard>
 
       <ConceptCard
+        id="51"
         number={51}
         title="Declaration Merging"
         theory={{
@@ -2829,6 +3130,7 @@ declare module "express" {
       </ConceptCard>
 
       <ConceptCard
+        id="52"
         number={52}
         title="Module Augmentation"
         theory={{
@@ -2871,6 +3173,7 @@ function handler(req: Request) {
       </ConceptCard>
 
       <ConceptCard
+        id="53"
         number={53}
         title="Namespaces"
         theory={{
@@ -2914,6 +3217,7 @@ Utils.Math.add(1, 2);`}
       </ConceptCard>
 
       <ConceptCard
+        id="54"
         number={54}
         title="Path Aliases"
         theory={{
@@ -2960,15 +3264,16 @@ import { formatDate } from "@/utils/date";
   );
 }
 
-function CompilerConfiguration() {
+function CompilerConfiguration({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-amber-500 to-yellow-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🛠️ Compiler & Configuration</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🛠️ Compiler & Configuration</h3>
         <p className="text-amber-100 break-words">Configuring TypeScript compiler</p>
       </div>
 
       <ConceptCard
+        id="55"
         number={55}
         title="tsconfig.json"
         priority="🔥"
@@ -3010,6 +3315,7 @@ function CompilerConfiguration() {
       </ConceptCard>
 
       <ConceptCard
+        id="56"
         number={56}
         title="Strict Mode Flags"
         priority="🔥"
@@ -3055,6 +3361,7 @@ function CompilerConfiguration() {
       </ConceptCard>
 
       <ConceptCard
+        id="57"
         number={57}
         title="Target / Module Configuration"
         theory={{
@@ -3098,6 +3405,7 @@ function CompilerConfiguration() {
       </ConceptCard>
 
       <ConceptCard
+        id="58"
         number={58}
         title="Source Maps"
         theory={{
@@ -3133,6 +3441,7 @@ function CompilerConfiguration() {
       </ConceptCard>
 
       <ConceptCard
+        id="59"
         number={59}
         title="Incremental Builds"
         theory={{
@@ -3171,15 +3480,16 @@ function CompilerConfiguration() {
   );
 }
 
-function JSInterop() {
+function JSInterop({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-rose-500 to-pink-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🌉 JS ↔ TS Interop</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🌉 JS ↔ TS Interop</h3>
         <p className="text-rose-100 break-words">Working with JavaScript</p>
       </div>
 
       <ConceptCard
+        id="60"
         number={60}
         title="Type Assertions"
         priority="🔥"
@@ -3228,6 +3538,7 @@ let str2 = value as unknown as string;`}
       </ConceptCard>
 
       <ConceptCard
+        id="61"
         number={61}
         title="AllowJs / CheckJs"
         theory={{
@@ -3273,6 +3584,7 @@ function greet(name, age) {
       </ConceptCard>
 
       <ConceptCard
+        id="62"
         number={62}
         title="JS Migration Strategy"
         theory={{
@@ -3322,15 +3634,16 @@ interface User {
   );
 }
 
-function ExpertLevelConcepts() {
+function ExpertLevelConcepts({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-violet-500 to-purple-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🚀 Expert-Level TS Concepts</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🚀 Expert-Level TS Concepts</h3>
         <p className="text-violet-100 break-words">Advanced TypeScript mastery</p>
       </div>
 
       <ConceptCard
+        id="63"
         number={63}
         title="Structural vs Nominal Typing"
         theory={{
@@ -3376,6 +3689,7 @@ let coord: Coordinate = point; // ✅ OK - structures match
       </ConceptCard>
 
       <ConceptCard
+        id="64"
         number={64}
         title="Variance (Covariance / Contravariance)"
         theory={{
@@ -3424,6 +3738,7 @@ let animalGetter: Getter = dogGetter; // ✅ OK - covariant`}
       </ConceptCard>
 
       <ConceptCard
+        id="65"
         number={65}
         title="Exact Optional Property Types"
         theory={{
@@ -3464,6 +3779,7 @@ interface Config2 {
       </ConceptCard>
 
       <ConceptCard
+        id="66"
         number={66}
         title="Satisfies Operator"
         theory={{
@@ -3512,6 +3828,7 @@ const config2 = {
 
 // Helper component for concept cards
 interface ConceptCardProps {
+  id?: string;
   number: number;
   title: string;
   description?: string;
@@ -3530,6 +3847,7 @@ interface ConceptCardProps {
 }
 
 function ConceptCard({
+  id,
   number,
   title,
   description,
@@ -3540,7 +3858,10 @@ function ConceptCard({
   const [showExamples, setShowExamples] = useState(false);
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-blue-500 w-full max-w-full flex flex-col overflow-hidden">
+    <div 
+      id={id ? `concept-${id}` : undefined}
+      className="bg-white rounded-xl p-6 shadow-md border-l-4 border-blue-500 w-full max-w-full flex flex-col overflow-hidden scroll-mt-4"
+    >
       <div className="flex flex-wrap items-center gap-3 mb-4 w-full">
         <span className="text-2xl font-bold text-blue-500 flex-shrink-0">#{number}</span>
         <h4 className="text-2xl font-bold text-gray-900 break-words flex-1 min-w-0">{title}</h4>

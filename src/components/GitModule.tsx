@@ -4,71 +4,208 @@ import TheorySection from "./TheorySection";
 
 export default function GitModule() {
   const [activeSection, setActiveSection] = useState("basics");
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["basics"]));
+  const [activeConcept, setActiveConcept] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const sections = [
-    { id: "basics", title: "Git Basics", icon: "🔰", count: "1-10" },
-    { id: "branching", title: "Branching & Merging", icon: "🌿", count: "11-18" },
-    { id: "remote", title: "Remote Repositories", icon: "☁️", count: "19-25" },
-    { id: "collaboration", title: "Collaboration", icon: "👥", count: "26-32" },
-    { id: "advanced", title: "Advanced Git", icon: "⚡", count: "33-40" },
-    { id: "github", title: "GitHub Features", icon: "🐙", count: "41-48" },
+    { 
+      id: "basics", 
+      title: "Git Basics", 
+      icon: "🔰", 
+      count: "1-10",
+      concepts: Array.from({ length: 10 }, (_, i) => ({ id: String(i + 1), title: `Concept ${i + 1}`, number: i + 1 }))
+    },
+    { 
+      id: "branching", 
+      title: "Branching & Merging", 
+      icon: "🌿", 
+      count: "11-18",
+      concepts: Array.from({ length: 8 }, (_, i) => ({ id: String(i + 11), title: `Concept ${i + 11}`, number: i + 11 }))
+    },
+    { 
+      id: "remote", 
+      title: "Remote Repositories", 
+      icon: "☁️", 
+      count: "19-25",
+      concepts: Array.from({ length: 7 }, (_, i) => ({ id: String(i + 19), title: `Concept ${i + 19}`, number: i + 19 }))
+    },
+    { 
+      id: "collaboration", 
+      title: "Collaboration", 
+      icon: "👥", 
+      count: "26-32",
+      concepts: Array.from({ length: 7 }, (_, i) => ({ id: String(i + 26), title: `Concept ${i + 26}`, number: i + 26 }))
+    },
+    { 
+      id: "advanced", 
+      title: "Advanced Git", 
+      icon: "⚡", 
+      count: "33-40",
+      concepts: Array.from({ length: 8 }, (_, i) => ({ id: String(i + 33), title: `Concept ${i + 33}`, number: i + 33 }))
+    },
+    { 
+      id: "github", 
+      title: "GitHub Features", 
+      icon: "🐙", 
+      count: "41-48",
+      concepts: Array.from({ length: 8 }, (_, i) => ({ id: String(i + 41), title: `Concept ${i + 41}`, number: i + 41 }))
+    },
   ];
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-4xl font-bold mb-2 text-gray-900">Git & GitHub</h2>
-        <p className="text-gray-600">
-          Master version control with Git and collaborate using GitHub
-        </p>
-      </div>
+  const toggleSection = (sectionId: string) => {
+    setExpandedSections((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(sectionId)) {
+        newSet.delete(sectionId);
+      } else {
+        newSet.add(sectionId);
+        setActiveSection(sectionId);
+      }
+      return newSet;
+    });
+  };
 
-      {/* Section Tabs - Scrollable */}
-      <div className="overflow-x-auto">
-        <div className="flex gap-2 border-b border-gray-200 min-w-max pb-2">
-          {sections.map((section) => (
-            <button
-              key={section.id}
-              onClick={() => setActiveSection(section.id)}
-              className={`px-4 py-2 font-semibold transition-colors border-b-2 whitespace-nowrap ${
-                activeSection === section.id
-                  ? "border-blue-500 text-blue-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              <span className="mr-2">{section.icon}</span>
-              {section.title}
-              <span className="ml-2 text-xs opacity-75">
-                ({section.count})
-              </span>
-            </button>
-          ))}
+  const handleConceptClick = (sectionId: string, conceptId: string) => {
+    setActiveSection(sectionId);
+    setActiveConcept(conceptId);
+    setExpandedSections((prev) => new Set(prev).add(sectionId));
+    // Close sidebar on mobile after selection
+    if (window.innerWidth < 768) {
+      setTimeout(() => setSidebarOpen(false), 0);
+    }
+    
+    setTimeout(() => {
+      const element = document.getElementById(`concept-${conceptId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
+
+  return (
+    <div className="flex flex-col md:flex-row gap-3 md:gap-4 h-full w-full relative">
+      {/* Mobile Menu Button - Only show on larger mobile/tablet */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="hidden sm:flex md:hidden fixed top-[72px] left-3 z-50 bg-blue-500 text-white p-2 rounded-lg shadow-lg hover:bg-blue-600 transition-colors"
+        aria-label="Toggle sidebar"
+      >
+        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      {/* Mobile Floating Button for Small Screens */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="sm:hidden fixed bottom-20 right-4 z-40 bg-blue-500 text-white p-3 rounded-full shadow-2xl hover:shadow-3xl transition-all hover:scale-110 active:scale-95"
+        aria-label="Toggle module menu"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40 top-[64px] sm:top-[72px]"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Left Sidebar - Vertical Navigation - Responsive */}
+      <div className={`
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        fixed md:sticky top-[64px] sm:top-[72px] md:top-0 left-0 z-40
+        w-[280px] sm:w-64 md:w-64 flex-shrink-0 
+        bg-white rounded-xl shadow-md p-2 sm:p-3 
+        overflow-y-auto h-[calc(100vh-64px)] sm:h-[calc(100vh-72px)] md:max-h-[calc(100vh-120px)] 
+        transition-transform duration-300 ease-in-out
+      `}>
+        <div className="mb-2 sm:mb-3 pb-2 sm:pb-3 border-b border-gray-200">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900">Git & GitHub</h2>
+          <p className="text-xs text-gray-600 mt-0.5">
+            Version control
+          </p>
+        </div>
+
+        <div className="space-y-1.5">
+          {sections.map((section) => {
+            const isExpanded = expandedSections.has(section.id);
+            const isActive = activeSection === section.id;
+
+            return (
+              <div key={section.id} className="border border-gray-200 rounded-md overflow-hidden">
+                <button
+                  onClick={() => toggleSection(section.id)}
+                  className={`w-full px-3 py-2 text-left font-medium transition-colors flex items-center justify-between text-sm ${
+                    isActive
+                      ? "bg-blue-50 text-blue-700 border-l-4 border-blue-500"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                    <span className="text-base flex-shrink-0">{section.icon}</span>
+                    <span className="truncate">{section.title}</span>
+                    <span className="text-xs opacity-75 flex-shrink-0">({section.count})</span>
+                  </div>
+                  <span className={`transition-transform text-xs flex-shrink-0 ml-1 ${isExpanded ? "rotate-180" : ""}`}>
+                    ▼
+                  </span>
+                </button>
+
+                {isExpanded && (
+                  <div className="bg-gray-50 border-t border-gray-200">
+                    {section.concepts.map((concept) => (
+                      <button
+                        key={concept.id}
+                        onClick={() => handleConceptClick(section.id, concept.id)}
+                        className={`w-full px-4 py-1.5 text-left text-xs transition-colors flex items-center gap-1.5 ${
+                          activeConcept === concept.id
+                            ? "bg-blue-100 text-blue-700 font-semibold border-l-4 border-blue-500"
+                            : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                        }`}
+                      >
+                        <span className="text-blue-500 font-semibold text-xs flex-shrink-0">#{concept.number}</span>
+                        <span className="flex-1 text-left truncate">{concept.title}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Content */}
-      <div className="mt-6 w-full max-w-full overflow-x-hidden">
-        {activeSection === "basics" && <GitBasics />}
-        {activeSection === "branching" && <BranchingMerging />}
-        {activeSection === "remote" && <RemoteRepositories />}
-        {activeSection === "collaboration" && <Collaboration />}
-        {activeSection === "advanced" && <AdvancedGit />}
-        {activeSection === "github" && <GitHubFeatures />}
+      {/* Right Content Area */}
+      <div className="flex-1 min-w-0 max-w-full mt-0 md:mt-0">
+        <div className="w-full max-w-full overflow-x-hidden px-0">
+          {activeSection === "basics" && <GitBasics activeConcept={activeConcept} />}
+          {activeSection === "branching" && <BranchingMerging activeConcept={activeConcept} />}
+          {activeSection === "remote" && <RemoteRepositories activeConcept={activeConcept} />}
+          {activeSection === "collaboration" && <Collaboration activeConcept={activeConcept} />}
+          {activeSection === "advanced" && <AdvancedGit activeConcept={activeConcept} />}
+          {activeSection === "github" && <GitHubFeatures activeConcept={activeConcept} />}
+        </div>
       </div>
     </div>
   );
 }
 
 // ========== GIT BASICS (1-10) ==========
-function GitBasics() {
+function GitBasics({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
-      <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🔰 Git Basics</h3>
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
+      <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl p-4 sm:p-5 md:p-6 text-white w-full max-w-full overflow-hidden">
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🔰 Git Basics</h3>
         <p className="text-green-100 break-words">Essential Git commands and concepts</p>
       </div>
 
       <ConceptCard
+        id="1"
         number={1}
         title="What is Git"
         priority="🔥"
@@ -117,6 +254,7 @@ git config --list`}
       </ConceptCard>
 
       <ConceptCard
+        id="2"
         number={2}
         title="Initialize Repository"
         priority="🔥"
@@ -161,6 +299,7 @@ git status`}
       </ConceptCard>
 
       <ConceptCard
+        id="3"
         number={3}
         title="Git Status"
         priority="🔥"
@@ -207,6 +346,7 @@ git status -s
       </ConceptCard>
 
       <ConceptCard
+        id="4"
         number={4}
         title="Git Add"
         priority="🔥"
@@ -253,6 +393,7 @@ git status`}
       </ConceptCard>
 
       <ConceptCard
+        id="5"
         number={5}
         title="Git Commit"
         priority="🔥"
@@ -300,6 +441,7 @@ git log`}
       </ConceptCard>
 
       <ConceptCard
+        id="6"
         number={6}
         title="Git Log"
         theory={{
@@ -354,6 +496,7 @@ git log --stat`}
       </ConceptCard>
 
       <ConceptCard
+        id="7"
         number={7}
         title="Git Diff"
         theory={{
@@ -404,6 +547,7 @@ git diff --word-diff`}
       </ConceptCard>
 
       <ConceptCard
+        id="8"
         number={8}
         title="Git Ignore"
         priority="🔥"
@@ -467,6 +611,7 @@ temp/
       </ConceptCard>
 
       <ConceptCard
+        id="9"
         number={9}
         title="Git Restore / Reset"
         theory={{
@@ -515,6 +660,7 @@ git reset --hard abc123`}
       </ConceptCard>
 
       <ConceptCard
+        id="10"
         number={10}
         title="Git Show"
         theory={{
@@ -563,15 +709,16 @@ git show --name-only`}
 }
 
 // ========== BRANCHING & MERGING (11-18) ==========
-function BranchingMerging() {
+function BranchingMerging({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
-      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🌿 Branching & Merging</h3>
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
+      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl p-4 sm:p-5 md:p-6 text-white w-full max-w-full overflow-hidden">
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🌿 Branching & Merging</h3>
         <p className="text-blue-100 break-words">Working with branches and merging changes</p>
       </div>
 
       <ConceptCard
+        id="11"
         number={11}
         title="Git Branch"
         priority="🔥"
@@ -628,6 +775,7 @@ git branch -m new-name`}
       </ConceptCard>
 
       <ConceptCard
+        id="12"
         number={12}
         title="Git Checkout / Switch"
         theory={{
@@ -674,6 +822,7 @@ git checkout abc123`}
       </ConceptCard>
 
       <ConceptCard
+        id="13"
         number={13}
         title="Git Merge"
         priority="🔥"
@@ -721,6 +870,7 @@ git commit -m "Add login feature"`}
       </ConceptCard>
 
       <ConceptCard
+        id="14"
         number={14}
         title="Merge Conflicts"
         priority="🔥"
@@ -776,6 +926,7 @@ git commit -m "Resolve merge conflict"`}
       </ConceptCard>
 
       <ConceptCard
+        id="15"
         number={15}
         title="Git Rebase"
         theory={{
@@ -819,6 +970,7 @@ git rebase --onto main feature-old feature-new`}
       </ConceptCard>
 
       <ConceptCard
+        id="16"
         number={16}
         title="Git Stash"
         priority="🔥"
@@ -874,6 +1026,7 @@ git stash clear`}
       </ConceptCard>
 
       <ConceptCard
+        id="17"
         number={17}
         title="Git Cherry-pick"
         theory={{
@@ -920,6 +1073,7 @@ git cherry-pick --abort`}
       </ConceptCard>
 
       <ConceptCard
+        id="18"
         number={18}
         title="Git Tag"
         theory={{
@@ -974,15 +1128,16 @@ git push --tags`}
 }
 
 // ========== REMOTE REPOSITORIES (19-25) ==========
-function RemoteRepositories() {
+function RemoteRepositories({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
-      <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">☁️ Remote Repositories</h3>
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
+      <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl p-4 sm:p-5 md:p-6 text-white w-full max-w-full overflow-hidden">
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">☁️ Remote Repositories</h3>
         <p className="text-purple-100 break-words">Working with remote repositories</p>
       </div>
 
       <ConceptCard
+        id="19"
         number={19}
         title="Git Remote"
         priority="🔥"
@@ -1029,6 +1184,7 @@ git remote rename origin upstream`}
       </ConceptCard>
 
       <ConceptCard
+        id="20"
         number={20}
         title="Git Clone"
         priority="🔥"
@@ -1072,6 +1228,7 @@ git clone --depth 1 https://github.com/user/repo.git`}
       </ConceptCard>
 
       <ConceptCard
+        id="21"
         number={21}
         title="Git Push"
         priority="🔥"
@@ -1120,6 +1277,7 @@ git push --tags`}
       </ConceptCard>
 
       <ConceptCard
+        id="22"
         number={22}
         title="Git Pull"
         priority="🔥"
@@ -1163,6 +1321,7 @@ git pull -v`}
       </ConceptCard>
 
       <ConceptCard
+        id="23"
         number={23}
         title="Git Fetch"
         theory={{
@@ -1205,6 +1364,7 @@ git log origin/main..HEAD`}
       </ConceptCard>
 
       <ConceptCard
+        id="24"
         number={24}
         title="Git Pull vs Fetch"
         theory={{
@@ -1250,6 +1410,7 @@ git diff HEAD origin/main`}
       </ConceptCard>
 
       <ConceptCard
+        id="25"
         number={25}
         title="Upstream Tracking"
         theory={{
@@ -1296,15 +1457,16 @@ git pull    # Instead of git pull origin feature-login`}
 }
 
 // ========== COLLABORATION (26-32) ==========
-function Collaboration() {
+function Collaboration({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
-      <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">👥 Collaboration</h3>
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
+      <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-4 sm:p-5 md:p-6 text-white w-full max-w-full overflow-hidden">
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">👥 Collaboration</h3>
         <p className="text-orange-100 break-words">Working with teams and collaborative workflows</p>
       </div>
 
       <ConceptCard
+        id="26"
         number={26}
         title="Pull Requests"
         priority="🔥"
@@ -1356,6 +1518,7 @@ git push -u origin feature-new-feature
       </ConceptCard>
 
       <ConceptCard
+        id="27"
         number={27}
         title="Code Review"
         priority="🔥"
@@ -1407,6 +1570,7 @@ git push -u origin feature-new-feature
       </ConceptCard>
 
       <ConceptCard
+        id="28"
         number={28}
         title="Fork & Clone"
         theory={{
@@ -1457,6 +1621,7 @@ git push origin feature-fix
       </ConceptCard>
 
       <ConceptCard
+        id="29"
         number={29}
         title="Branch Protection"
         theory={{
@@ -1508,6 +1673,7 @@ git push origin feature-fix
       </ConceptCard>
 
       <ConceptCard
+        id="30"
         number={30}
         title="Git Workflow Strategies"
         priority="🔥"
@@ -1564,6 +1730,7 @@ git tag -a v1.0.0
       </ConceptCard>
 
       <ConceptCard
+        id="31"
         number={31}
         title="Resolving Conflicts in PRs"
         theory={{
@@ -1616,6 +1783,7 @@ git push --force-with-lease
       </ConceptCard>
 
       <ConceptCard
+        id="32"
         number={32}
         title="Squash & Merge"
         theory={{
@@ -1672,15 +1840,16 @@ git commit -m "Add login feature
 }
 
 // ========== ADVANCED GIT (33-40) ==========
-function AdvancedGit() {
+function AdvancedGit({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">⚡ Advanced Git</h3>
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
+      <div className="bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl p-4 sm:p-5 md:p-6 text-white w-full max-w-full overflow-hidden">
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">⚡ Advanced Git</h3>
         <p className="text-indigo-100 break-words">Advanced Git concepts and techniques</p>
       </div>
 
       <ConceptCard
+        id="33"
         number={33}
         title="Interactive Rebase"
         theory={{
@@ -1733,6 +1902,7 @@ git rebase -i HEAD~3
       </ConceptCard>
 
       <ConceptCard
+        id="34"
         number={34}
         title="Git Bisect"
         theory={{
@@ -1787,6 +1957,7 @@ git bisect run npm test`}
       </ConceptCard>
 
       <ConceptCard
+        id="35"
         number={35}
         title="Git Hooks"
         theory={{
@@ -1844,6 +2015,7 @@ npx husky add .husky/pre-push "npm test"`}
       </ConceptCard>
 
       <ConceptCard
+        id="36"
         number={36}
         title="Git Submodules"
         theory={{
@@ -1891,6 +2063,7 @@ git rm libs/shared-lib`}
       </ConceptCard>
 
       <ConceptCard
+        id="37"
         number={37}
         title="Git Reflog"
         theory={{
@@ -1941,6 +2114,7 @@ git reset --hard ghi789
       </ConceptCard>
 
       <ConceptCard
+        id="38"
         number={38}
         title="Git Blame"
         theory={{
@@ -1989,6 +2163,7 @@ git blame -w src/App.tsx
       </ConceptCard>
 
       <ConceptCard
+        id="39"
         number={39}
         title="Git Clean"
         theory={{
@@ -2041,6 +2216,7 @@ git clean -fx
       </ConceptCard>
 
       <ConceptCard
+        id="40"
         number={40}
         title="Git Archive"
         theory={{
@@ -2092,15 +2268,16 @@ git archive --format=zip HEAD src/ > src.zip
 }
 
 // ========== GITHUB FEATURES (41-48) ==========
-function GitHubFeatures() {
+function GitHubFeatures({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
-      <div className="bg-gradient-to-r from-gray-700 to-gray-900 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🐙 GitHub Features</h3>
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
+      <div className="bg-gradient-to-r from-gray-700 to-gray-900 rounded-xl p-4 sm:p-5 md:p-6 text-white w-full max-w-full overflow-hidden">
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🐙 GitHub Features</h3>
         <p className="text-gray-300 break-words">GitHub-specific features and workflows</p>
       </div>
 
       <ConceptCard
+        id="41"
         number={41}
         title="GitHub Issues"
         priority="🔥"
@@ -2157,6 +2334,7 @@ function GitHubFeatures() {
       </ConceptCard>
 
       <ConceptCard
+        id="42"
         number={42}
         title="GitHub Actions"
         priority="🔥"
@@ -2215,6 +2393,7 @@ jobs:
       </ConceptCard>
 
       <ConceptCard
+        id="43"
         number={43}
         title="GitHub Pages"
         theory={{
@@ -2267,6 +2446,7 @@ jobs:
       </ConceptCard>
 
       <ConceptCard
+        id="44"
         number={44}
         title="GitHub Releases"
         theory={{
@@ -2322,6 +2502,7 @@ jobs:
       </ConceptCard>
 
       <ConceptCard
+        id="45"
         number={45}
         title="GitHub Wikis"
         theory={{
@@ -2379,6 +2560,7 @@ git clone https://github.com/user/repo.wiki.git
       </ConceptCard>
 
       <ConceptCard
+        id="46"
         number={46}
         title="GitHub Gists"
         theory={{
@@ -2433,6 +2615,7 @@ git clone https://gist.github.com/gist-id.git
       </ConceptCard>
 
       <ConceptCard
+        id="47"
         number={47}
         title="GitHub Organizations"
         theory={{
@@ -2485,6 +2668,7 @@ git clone https://gist.github.com/gist-id.git
       </ConceptCard>
 
       <ConceptCard
+        id="48"
         number={48}
         title="GitHub CLI"
         priority="🔥"
@@ -2557,6 +2741,7 @@ gh pr --help`}
 
 // Helper component for concept cards
 interface ConceptCardProps {
+  id?: string;
   number: number;
   title: string;
   description?: string;
@@ -2575,6 +2760,7 @@ interface ConceptCardProps {
 }
 
 function ConceptCard({
+  id,
   number,
   title,
   description,
@@ -2585,7 +2771,10 @@ function ConceptCard({
   const [showExamples, setShowExamples] = useState(false);
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-blue-500 w-full max-w-full flex flex-col overflow-hidden">
+    <div 
+      id={id ? `concept-${id}` : undefined}
+      className="bg-white rounded-xl p-6 shadow-md border-l-4 border-blue-500 w-full max-w-full flex flex-col overflow-hidden scroll-mt-4"
+    >
       <div className="flex flex-wrap items-center gap-3 mb-4 w-full">
         <span className="text-2xl font-bold text-blue-500 flex-shrink-0">#{number}</span>
         <h4 className="text-2xl font-bold text-gray-900 break-words flex-1 min-w-0">{title}</h4>

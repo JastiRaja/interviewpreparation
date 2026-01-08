@@ -4,87 +4,272 @@ import TheorySection from "./TheorySection";
 
 export default function NodeJSModule() {
   const [activeSection, setActiveSection] = useState("core");
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["core"]));
+  const [activeConcept, setActiveConcept] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const sections = [
-    { id: "core", title: "Core Fundamentals", icon: "🔰", count: "1-7" },
-    { id: "modules", title: "Modules & Packages", icon: "📦", count: "8-16" },
-    { id: "web", title: "Web & Networking", icon: "🌐", count: "17-23" },
-    { id: "async", title: "Async Programming", icon: "⚡", count: "24-29" },
-    { id: "filesystem", title: "File System & Streams", icon: "📁", count: "30-36" },
-    { id: "events", title: "Event-Driven Architecture", icon: "🧠", count: "37-39" },
-    { id: "express", title: "Express.js", icon: "🚀", count: "40-45" },
-    { id: "databases", title: "Databases", icon: "🗄️", count: "46-52" },
-    { id: "security", title: "Authentication & Security", icon: "🔐", count: "53-59" },
-    { id: "testing", title: "Testing & Debugging", icon: "🧪", count: "60-65" },
-    { id: "performance", title: "Performance & Scalability", icon: "⚙️", count: "66-72" },
-    { id: "devops", title: "DevOps & Deployment", icon: "🐳", count: "73-77" },
-    { id: "architecture", title: "Architecture & Best Practices", icon: "🧱", count: "78-82" },
-    { id: "advanced", title: "Advanced Node.js Concepts", icon: "🌍", count: "83-88" },
+    { 
+      id: "core", 
+      title: "Core Fundamentals", 
+      icon: "🔰", 
+      count: "1-7",
+      concepts: Array.from({ length: 7 }, (_, i) => ({ id: String(i + 1), title: `Concept ${i + 1}`, number: i + 1 }))
+    },
+    { 
+      id: "modules", 
+      title: "Modules & Packages", 
+      icon: "📦", 
+      count: "8-16",
+      concepts: Array.from({ length: 9 }, (_, i) => ({ id: String(i + 8), title: `Concept ${i + 8}`, number: i + 8 }))
+    },
+    { 
+      id: "web", 
+      title: "Web & Networking", 
+      icon: "🌐", 
+      count: "17-23",
+      concepts: Array.from({ length: 7 }, (_, i) => ({ id: String(i + 17), title: `Concept ${i + 17}`, number: i + 17 }))
+    },
+    { 
+      id: "async", 
+      title: "Async Programming", 
+      icon: "⚡", 
+      count: "24-29",
+      concepts: Array.from({ length: 6 }, (_, i) => ({ id: String(i + 24), title: `Concept ${i + 24}`, number: i + 24 }))
+    },
+    { 
+      id: "filesystem", 
+      title: "File System & Streams", 
+      icon: "📁", 
+      count: "30-36",
+      concepts: Array.from({ length: 7 }, (_, i) => ({ id: String(i + 30), title: `Concept ${i + 30}`, number: i + 30 }))
+    },
+    { 
+      id: "events", 
+      title: "Event-Driven Architecture", 
+      icon: "🧠", 
+      count: "37-39",
+      concepts: Array.from({ length: 3 }, (_, i) => ({ id: String(i + 37), title: `Concept ${i + 37}`, number: i + 37 }))
+    },
+    { 
+      id: "express", 
+      title: "Express.js", 
+      icon: "🚀", 
+      count: "40-45",
+      concepts: Array.from({ length: 6 }, (_, i) => ({ id: String(i + 40), title: `Concept ${i + 40}`, number: i + 40 }))
+    },
+    { 
+      id: "databases", 
+      title: "Databases", 
+      icon: "🗄️", 
+      count: "46-52",
+      concepts: Array.from({ length: 7 }, (_, i) => ({ id: String(i + 46), title: `Concept ${i + 46}`, number: i + 46 }))
+    },
+    { 
+      id: "security", 
+      title: "Authentication & Security", 
+      icon: "🔐", 
+      count: "53-59",
+      concepts: Array.from({ length: 7 }, (_, i) => ({ id: String(i + 53), title: `Concept ${i + 53}`, number: i + 53 }))
+    },
+    { 
+      id: "testing", 
+      title: "Testing & Debugging", 
+      icon: "🧪", 
+      count: "60-65",
+      concepts: Array.from({ length: 6 }, (_, i) => ({ id: String(i + 60), title: `Concept ${i + 60}`, number: i + 60 }))
+    },
+    { 
+      id: "performance", 
+      title: "Performance & Scalability", 
+      icon: "⚙️", 
+      count: "66-72",
+      concepts: Array.from({ length: 7 }, (_, i) => ({ id: String(i + 66), title: `Concept ${i + 66}`, number: i + 66 }))
+    },
+    { 
+      id: "devops", 
+      title: "DevOps & Deployment", 
+      icon: "🐳", 
+      count: "73-77",
+      concepts: Array.from({ length: 5 }, (_, i) => ({ id: String(i + 73), title: `Concept ${i + 73}`, number: i + 73 }))
+    },
+    { 
+      id: "architecture", 
+      title: "Architecture & Best Practices", 
+      icon: "🧱", 
+      count: "78-82",
+      concepts: Array.from({ length: 5 }, (_, i) => ({ id: String(i + 78), title: `Concept ${i + 78}`, number: i + 78 }))
+    },
+    { 
+      id: "advanced", 
+      title: "Advanced Node.js Concepts", 
+      icon: "🌍", 
+      count: "83-88",
+      concepts: Array.from({ length: 6 }, (_, i) => ({ id: String(i + 83), title: `Concept ${i + 83}`, number: i + 83 }))
+    },
   ];
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-4xl font-bold mb-2 text-gray-900">Node.js</h2>
-        <p className="text-gray-600">
-          Learn Node.js and npm for JavaScript runtime and package management
-        </p>
-      </div>
+  const toggleSection = (sectionId: string) => {
+    setExpandedSections((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(sectionId)) {
+        newSet.delete(sectionId);
+      } else {
+        newSet.add(sectionId);
+        setActiveSection(sectionId);
+      }
+      return newSet;
+    });
+  };
 
-      {/* Section Tabs - Scrollable */}
-      <div className="overflow-x-auto">
-        <div className="flex gap-2 border-b border-gray-200 min-w-max pb-2">
-          {sections.map((section) => (
-            <button
-              key={section.id}
-              onClick={() => setActiveSection(section.id)}
-              className={`px-4 py-2 font-semibold transition-colors border-b-2 whitespace-nowrap ${
-                activeSection === section.id
-                  ? "border-blue-500 text-blue-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              <span className="mr-2">{section.icon}</span>
-              {section.title}
-              <span className="ml-2 text-xs opacity-75">
-                ({section.count})
-              </span>
-            </button>
-          ))}
+  const handleConceptClick = (sectionId: string, conceptId: string) => {
+    setActiveSection(sectionId);
+    setActiveConcept(conceptId);
+    setExpandedSections((prev) => new Set(prev).add(sectionId));
+    // Close sidebar on mobile after selection
+    if (window.innerWidth < 768) {
+      setTimeout(() => setSidebarOpen(false), 0);
+    }
+    
+    setTimeout(() => {
+      const element = document.getElementById(`concept-${conceptId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
+
+  return (
+    <div className="flex flex-col md:flex-row gap-3 md:gap-4 h-full w-full relative">
+      {/* Mobile Menu Button - Only show on larger mobile/tablet */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="hidden sm:flex md:hidden fixed top-[72px] left-3 z-50 bg-blue-500 text-white p-2 rounded-lg shadow-lg hover:bg-blue-600 transition-colors"
+        aria-label="Toggle sidebar"
+      >
+        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      {/* Mobile Floating Button for Small Screens */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="sm:hidden fixed bottom-20 right-4 z-40 bg-blue-500 text-white p-3 rounded-full shadow-2xl hover:shadow-3xl transition-all hover:scale-110 active:scale-95"
+        aria-label="Toggle module menu"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40 top-[64px] sm:top-[72px]"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Left Sidebar - Vertical Navigation - Responsive */}
+      <div className={`
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        fixed md:sticky top-[64px] sm:top-[72px] md:top-0 left-0 z-40
+        w-[280px] sm:w-64 md:w-64 flex-shrink-0 
+        bg-white rounded-xl shadow-md p-2 sm:p-3 
+        overflow-y-auto h-[calc(100vh-64px)] sm:h-[calc(100vh-72px)] md:max-h-[calc(100vh-120px)] 
+        transition-transform duration-300 ease-in-out
+      `}>
+        <div className="mb-2 sm:mb-3 pb-2 sm:pb-3 border-b border-gray-200">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900">Node.js</h2>
+          <p className="text-xs text-gray-600 mt-0.5">
+            JavaScript runtime
+          </p>
+        </div>
+
+        <div className="space-y-1.5">
+          {sections.map((section) => {
+            const isExpanded = expandedSections.has(section.id);
+            const isActive = activeSection === section.id;
+
+            return (
+              <div key={section.id} className="border border-gray-200 rounded-md overflow-hidden">
+                <button
+                  onClick={() => toggleSection(section.id)}
+                  className={`w-full px-3 py-2 text-left font-medium transition-colors flex items-center justify-between text-sm ${
+                    isActive
+                      ? "bg-blue-50 text-blue-700 border-l-4 border-blue-500"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                    <span className="text-base flex-shrink-0">{section.icon}</span>
+                    <span className="truncate">{section.title}</span>
+                    <span className="text-xs opacity-75 flex-shrink-0">({section.count})</span>
+                  </div>
+                  <span className={`transition-transform text-xs flex-shrink-0 ml-1 ${isExpanded ? "rotate-180" : ""}`}>
+                    ▼
+                  </span>
+                </button>
+
+                {isExpanded && (
+                  <div className="bg-gray-50 border-t border-gray-200">
+                    {section.concepts.map((concept) => (
+                      <button
+                        key={concept.id}
+                        onClick={() => handleConceptClick(section.id, concept.id)}
+                        className={`w-full px-4 py-1.5 text-left text-xs transition-colors flex items-center gap-1.5 ${
+                          activeConcept === concept.id
+                            ? "bg-blue-100 text-blue-700 font-semibold border-l-4 border-blue-500"
+                            : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                        }`}
+                      >
+                        <span className="text-blue-500 font-semibold text-xs flex-shrink-0">#{concept.number}</span>
+                        <span className="flex-1 text-left truncate">{concept.title}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Content */}
-      <div className="mt-6 w-full max-w-full overflow-x-hidden">
-        {activeSection === "core" && <CoreFundamentals />}
-        {activeSection === "modules" && <ModulesPackages />}
-        {activeSection === "web" && <WebNetworking />}
-        {activeSection === "async" && <AsyncProgramming />}
-        {activeSection === "filesystem" && <FileSystemStreams />}
-        {activeSection === "events" && <EventDrivenArchitecture />}
-        {activeSection === "express" && <ExpressJS />}
-        {activeSection === "databases" && <Databases />}
-        {activeSection === "security" && <AuthenticationSecurity />}
-        {activeSection === "testing" && <TestingDebugging />}
-        {activeSection === "performance" && <PerformanceScalability />}
-        {activeSection === "devops" && <DevOpsDeployment />}
-        {activeSection === "architecture" && <ArchitectureBestPractices />}
-        {activeSection === "advanced" && <AdvancedConcepts />}
+      {/* Right Content Area */}
+      <div className="flex-1 min-w-0 max-w-full mt-0 md:mt-0">
+        <div className="w-full max-w-full overflow-x-hidden px-0">
+          {activeSection === "core" && <CoreFundamentals activeConcept={activeConcept} />}
+          {activeSection === "modules" && <ModulesPackages activeConcept={activeConcept} />}
+          {activeSection === "web" && <WebNetworking activeConcept={activeConcept} />}
+          {activeSection === "async" && <AsyncProgramming activeConcept={activeConcept} />}
+          {activeSection === "filesystem" && <FileSystemStreams activeConcept={activeConcept} />}
+          {activeSection === "events" && <EventDrivenArchitecture activeConcept={activeConcept} />}
+          {activeSection === "express" && <ExpressJS activeConcept={activeConcept} />}
+          {activeSection === "databases" && <Databases activeConcept={activeConcept} />}
+          {activeSection === "security" && <AuthenticationSecurity activeConcept={activeConcept} />}
+          {activeSection === "testing" && <TestingDebugging activeConcept={activeConcept} />}
+          {activeSection === "performance" && <PerformanceScalability activeConcept={activeConcept} />}
+          {activeSection === "devops" && <DevOpsDeployment activeConcept={activeConcept} />}
+          {activeSection === "architecture" && <ArchitectureBestPractices activeConcept={activeConcept} />}
+          {activeSection === "advanced" && <AdvancedConcepts activeConcept={activeConcept} />}
+        </div>
       </div>
     </div>
   );
 }
 
 // ========== CORE FUNDAMENTALS (1-7) ==========
-function CoreFundamentals() {
+function CoreFundamentals({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
-      <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🔰 Core Node.js Fundamentals</h3>
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
+      <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl p-4 sm:p-5 md:p-6 text-white w-full max-w-full overflow-hidden">
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🔰 Core Node.js Fundamentals</h3>
         <p className="text-blue-100 break-words">Understanding Node.js architecture and core concepts</p>
       </div>
 
       <ConceptCard
+        id="1"
         number={1}
         title="What is Node.js"
         priority="🔥"
@@ -131,6 +316,7 @@ fs.readFile('data.txt', 'utf8', (err, data) => {
       </ConceptCard>
 
       <ConceptCard
+        id="2"
         number={2}
         title="Node.js Architecture"
         theory={{
@@ -173,6 +359,7 @@ const http = require('http'); // Core Module
       </ConceptCard>
 
       <ConceptCard
+        id="3"
         number={3}
         title="Single-threaded Model"
         priority="🔥"
@@ -221,6 +408,7 @@ console.log('After readFile'); // Executes immediately`}
       </ConceptCard>
 
       <ConceptCard
+        id="4"
         number={4}
         title="Event Loop"
         priority="🔥"
@@ -281,6 +469,7 @@ console.log('End');`}
       </ConceptCard>
 
       <ConceptCard
+        id="5"
         number={5}
         title="Non-blocking I/O"
         priority="🔥"
@@ -329,6 +518,7 @@ fs.readFile('file3.txt', () => console.log('File 3'));
       </ConceptCard>
 
       <ConceptCard
+        id="6"
         number={6}
         title="V8 JavaScript Engine"
         theory={{
@@ -377,6 +567,7 @@ function sum(arr) {
       </ConceptCard>
 
       <ConceptCard
+        id="7"
         number={7}
         title="REPL"
         theory={{
@@ -431,15 +622,16 @@ undefined
 }
 
 // ========== MODULES & PACKAGES (8-16) ==========
-function ModulesPackages() {
+function ModulesPackages({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-green-500 to-teal-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">📦 Modules & Packages</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">📦 Modules & Packages</h3>
         <p className="text-green-100 break-words">Understanding Node.js module system and package management</p>
       </div>
 
       <ConceptCard
+        id="8"
         number={8}
         title="CommonJS (require, module.exports)"
         priority="🔥"
@@ -493,6 +685,7 @@ const path = require('path');`}
       </ConceptCard>
 
       <ConceptCard
+        id="9"
         number={9}
         title="ES Modules (import, export)"
         priority="🔥"
@@ -545,6 +738,7 @@ import multiply, { add, subtract } from './module.js';
       </ConceptCard>
 
       <ConceptCard
+        id="10"
         number={10}
         title="Built-in Modules - fs"
         priority="🔥"
@@ -604,6 +798,7 @@ fs.readdir('./', (err, files) => {
       </ConceptCard>
 
       <ConceptCard
+        id="11"
         number={11}
         title="Built-in Modules - path"
         theory={{
@@ -660,6 +855,7 @@ const normalized = path.normalize('/users//john/./file.txt');
       </ConceptCard>
 
       <ConceptCard
+        id="12"
         number={12}
         title="Built-in Modules - os"
         theory={{
@@ -715,6 +911,7 @@ console.log(os.type()); // 'Windows_NT', 'Darwin', 'Linux'`}
       </ConceptCard>
 
       <ConceptCard
+        id="13"
         number={13}
         title="Built-in Modules - http"
         priority="🔥"
@@ -770,6 +967,7 @@ http.get('http://example.com', (res) => {
       </ConceptCard>
 
       <ConceptCard
+        id="14"
         number={14}
         title="Built-in Modules - events"
         theory={{
@@ -833,6 +1031,7 @@ myEmitter.doSomething();`}
       </ConceptCard>
 
       <ConceptCard
+        id="15"
         number={15}
         title="Third-party Modules & Package Managers"
         priority="🔥"
@@ -891,6 +1090,7 @@ import express from 'express';
       </ConceptCard>
 
       <ConceptCard
+        id="16"
         number={16}
         title="package.json & package-lock.json"
         priority="🔥"
@@ -948,15 +1148,16 @@ import express from 'express';
 }
 
 // ========== WEB & NETWORKING (17-23) ==========
-function WebNetworking() {
+function WebNetworking({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🌐 Web & Networking</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🌐 Web & Networking</h3>
         <p className="text-purple-100 break-words">Building web servers and APIs</p>
       </div>
 
       <ConceptCard
+        id="17"
         number={17}
         title="HTTP Module"
         priority="🔥"
@@ -1005,6 +1206,7 @@ server.listen(3000, () => {
       </ConceptCard>
 
       <ConceptCard
+        id="18"
         number={18}
         title="Creating Web Servers"
         priority="🔥"
@@ -1056,6 +1258,7 @@ server.listen(3000, () => {
       </ConceptCard>
 
       <ConceptCard
+        id="19"
         number={19}
         title="Request & Response Objects"
         priority="🔥"
@@ -1116,6 +1319,7 @@ const server = http.createServer((req, res) => {
       </ConceptCard>
 
       <ConceptCard
+        id="20"
         number={20}
         title="REST APIs"
         priority="🔥"
@@ -1186,6 +1390,7 @@ server.listen(3000);`}
       </ConceptCard>
 
       <ConceptCard
+        id="21"
         number={21}
         title="Status Codes"
         theory={{
@@ -1247,6 +1452,7 @@ const server = http.createServer((req, res) => {
       </ConceptCard>
 
       <ConceptCard
+        id="22"
         number={22}
         title="Headers"
         theory={{
@@ -1302,6 +1508,7 @@ const server = http.createServer((req, res) => {
       </ConceptCard>
 
       <ConceptCard
+        id="23"
         number={23}
         title="CORS"
         priority="🔥"
@@ -1362,15 +1569,16 @@ const server = http.createServer((req, res) => {
 }
 
 // ========== ASYNC PROGRAMMING (24-29) ==========
-function AsyncProgramming() {
+function AsyncProgramming({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">⚡ Asynchronous Programming</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">⚡ Asynchronous Programming</h3>
         <p className="text-yellow-100 break-words">Mastering async patterns in Node.js - VERY IMPORTANT</p>
       </div>
 
       <ConceptCard
+        id="24"
         number={24}
         title="Callbacks"
         priority="🔥"
@@ -1424,6 +1632,7 @@ fs.readFile('file1.txt', 'utf8', (err1, data1) => {
       </ConceptCard>
 
       <ConceptCard
+        id="25"
         number={25}
         title="Promises"
         priority="🔥"
@@ -1492,6 +1701,7 @@ Promise.all([
       </ConceptCard>
 
       <ConceptCard
+        id="26"
         number={26}
         title="Async / Await"
         priority="🔥"
@@ -1559,6 +1769,7 @@ readFile();`}
       </ConceptCard>
 
       <ConceptCard
+        id="27"
         number={27}
         title="Error Handling (try/catch)"
         priority="🔥"
@@ -1631,6 +1842,7 @@ processData().catch(err => {
       </ConceptCard>
 
       <ConceptCard
+        id="28"
         number={28}
         title="Async Patterns"
         theory={{
@@ -1704,6 +1916,7 @@ async function sequentialSafe() {
       </ConceptCard>
 
       <ConceptCard
+        id="29"
         number={29}
         title="Async Best Practices"
         theory={{
@@ -1780,15 +1993,16 @@ main(); // Don't forget to call!`}
 }
 
 // ========== FILE SYSTEM & STREAMS (30-36) ==========
-function FileSystemStreams() {
+function FileSystemStreams({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">📁 File System & Streams</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">📁 File System & Streams</h3>
         <p className="text-cyan-100 break-words">Working with files and data streams</p>
       </div>
 
       <ConceptCard
+        id="30"
         number={30}
         title="File System (fs) - Synchronous vs Asynchronous"
         priority="🔥"
@@ -1848,6 +2062,7 @@ async function readFile() {
       </ConceptCard>
 
       <ConceptCard
+        id="31"
         number={31}
         title="Streams - Readable"
         priority="🔥"
@@ -1917,6 +2132,7 @@ const myReadable = new Readable({
       </ConceptCard>
 
       <ConceptCard
+        id="32"
         number={32}
         title="Streams - Writable"
         theory={{
@@ -1986,6 +2202,7 @@ const myWritable = new Writable({
       </ConceptCard>
 
       <ConceptCard
+        id="33"
         number={33}
         title="Streams - Duplex"
         theory={{
@@ -2044,6 +2261,7 @@ socket.on('data', (data) => {
       </ConceptCard>
 
       <ConceptCard
+        id="34"
         number={34}
         title="Streams - Transform"
         theory={{
@@ -2109,6 +2327,7 @@ fs.createReadStream('file.txt')
       </ConceptCard>
 
       <ConceptCard
+        id="35"
         number={35}
         title="Buffers"
         theory={{
@@ -2169,6 +2388,7 @@ buf1.equals(buf2); // Compare buffers`}
       </ConceptCard>
 
       <ConceptCard
+        id="36"
         number={36}
         title="Pipes"
         priority="🔥"
@@ -2247,15 +2467,16 @@ fs.createReadStream('input.txt')
 }
 
 // ========== EVENT-DRIVEN ARCHITECTURE (37-39) ==========
-function EventDrivenArchitecture() {
+function EventDrivenArchitecture({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🧠 Event-Driven Architecture</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🧠 Event-Driven Architecture</h3>
         <p className="text-indigo-100 break-words">Understanding Node.js event-driven programming model</p>
       </div>
 
       <ConceptCard
+        id="37"
         number={37}
         title="Events Module"
         priority="🔥"
@@ -2313,6 +2534,7 @@ console.log(emitter.listenerCount('data'));`}
       </ConceptCard>
 
       <ConceptCard
+        id="38"
         number={38}
         title="Event Emitters"
         priority="🔥"
@@ -2390,6 +2612,7 @@ userManager.on('error', (err) => {
       </ConceptCard>
 
       <ConceptCard
+        id="39"
         number={39}
         title="Custom Events"
         theory={{
@@ -2481,15 +2704,16 @@ processor.on('order:created', (order) => {
 }
 
 // ========== EXPRESS.JS (40-45) ==========
-function ExpressJS() {
+function ExpressJS({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🚀 Express.js</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🚀 Express.js</h3>
         <p className="text-green-100 break-words">The most popular Node.js web framework - MOST USED WITH NODE</p>
       </div>
 
       <ConceptCard
+        id="40"
         number={40}
         title="Express Basics"
         priority="🔥"
@@ -2548,6 +2772,7 @@ app.listen(PORT, () => {
       </ConceptCard>
 
       <ConceptCard
+        id="41"
         number={41}
         title="Routing"
         priority="🔥"
@@ -2621,6 +2846,7 @@ app.use('/api', router);`}
       </ConceptCard>
 
       <ConceptCard
+        id="42"
         number={42}
         title="Middleware"
         priority="🔥"
@@ -2695,6 +2921,7 @@ app.use(cors());`}
       </ConceptCard>
 
       <ConceptCard
+        id="43"
         number={43}
         title="Error-handling Middleware"
         priority="🔥"
@@ -2780,6 +3007,7 @@ process.on('unhandledRejection', (err) => {
       </ConceptCard>
 
       <ConceptCard
+        id="44"
         number={44}
         title="Request Lifecycle"
         theory={{
@@ -2858,6 +3086,7 @@ app.get('/api/async', async (req, res, next) => {
       </ConceptCard>
 
       <ConceptCard
+        id="45"
         number={45}
         title="MVC Pattern"
         priority="🔥"
@@ -2959,15 +3188,16 @@ app.listen(3000);
 }
 
 // ========== DATABASES (46-52) ==========
-function Databases() {
+function Databases({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-teal-500 to-cyan-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🗄️ Databases</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🗄️ Databases</h3>
         <p className="text-teal-100 break-words">Working with databases in Node.js applications</p>
       </div>
 
       <ConceptCard
+        id="46"
         number={46}
         title="MongoDB with Node"
         priority="🔥"
@@ -3038,6 +3268,7 @@ connectDB();`}
       </ConceptCard>
 
       <ConceptCard
+        id="47"
         number={47}
         title="SQL Databases (PostgreSQL, MySQL)"
         priority="🔥"
@@ -3113,6 +3344,7 @@ await connection.end();`}
       </ConceptCard>
 
       <ConceptCard
+        id="48"
         number={48}
         title="ORM / ODM"
         theory={{
@@ -3174,6 +3406,7 @@ await User.deleteOne({ name: 'John' });`}
       </ConceptCard>
 
       <ConceptCard
+        id="49"
         number={49}
         title="Mongoose"
         priority="🔥"
@@ -3241,6 +3474,7 @@ await User.deleteOne({ name: 'John' });`}
       </ConceptCard>
 
       <ConceptCard
+        id="50"
         number={50}
         title="Prisma"
         priority="🔥"
@@ -3315,6 +3549,7 @@ await prisma.user.delete({ where: { id: 1 } });`}
       </ConceptCard>
 
       <ConceptCard
+        id="51"
         number={51}
         title="Sequelize"
         theory={{
@@ -3382,6 +3617,7 @@ const user = await User.findOne({
       </ConceptCard>
 
       <ConceptCard
+        id="52"
         number={52}
         title="Connection Pooling"
         theory={{
@@ -3449,15 +3685,16 @@ const prisma = new PrismaClient();
 }
 
 // ========== AUTHENTICATION & SECURITY (53-59) ==========
-function AuthenticationSecurity() {
+function AuthenticationSecurity({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-red-500 to-pink-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🔐 Authentication & Security</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🔐 Authentication & Security</h3>
         <p className="text-red-100 break-words">Securing Node.js applications</p>
       </div>
 
       <ConceptCard
+        id="53"
         number={53}
         title="JWT Authentication"
         priority="🔥"
@@ -3534,6 +3771,7 @@ app.get('/profile', authenticateToken, (req, res) => {
       </ConceptCard>
 
       <ConceptCard
+        id="54"
         number={54}
         title="Sessions & Cookies"
         theory={{
@@ -3614,6 +3852,7 @@ app.post('/logout', (req, res) => {
       </ConceptCard>
 
       <ConceptCard
+        id="55"
         number={55}
         title="Password Hashing (bcrypt)"
         priority="🔥"
@@ -3692,6 +3931,7 @@ app.post('/login', async (req, res) => {
       </ConceptCard>
 
       <ConceptCard
+        id="56"
         number={56}
         title="OAuth"
         theory={{
@@ -3771,6 +4011,7 @@ app.get('/auth/google/callback',
       </ConceptCard>
 
       <ConceptCard
+        id="57"
         number={57}
         title="Environment Variables"
         priority="🔥"
@@ -3838,6 +4079,7 @@ if (process.env.NODE_ENV === 'production') {
       </ConceptCard>
 
       <ConceptCard
+        id="58"
         number={58}
         title="Helmet"
         theory={{
@@ -3893,6 +4135,7 @@ app.use(helmet({
       </ConceptCard>
 
       <ConceptCard
+        id="59"
         number={59}
         title="Rate Limiting"
         theory={{
@@ -3968,15 +4211,16 @@ const limiterWithRedis = rateLimit({
 }
 
 // ========== TESTING & DEBUGGING (60-65) ==========
-function TestingDebugging() {
+function TestingDebugging({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-orange-500 to-yellow-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🧪 Testing & Debugging</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🧪 Testing & Debugging</h3>
         <p className="text-orange-100 break-words">Testing and debugging Node.js applications</p>
       </div>
 
       <ConceptCard
+        id="60"
         number={60}
         title="Unit Testing"
         priority="🔥"
@@ -4049,6 +4293,7 @@ describe('Math functions', () => {
       </ConceptCard>
 
       <ConceptCard
+        id="61"
         number={61}
         title="Integration Testing"
         theory={{
@@ -4117,6 +4362,7 @@ describe('Users API', () => {
       </ConceptCard>
 
       <ConceptCard
+        id="62"
         number={62}
         title="Jest / Mocha"
         priority="🔥"
@@ -4186,6 +4432,7 @@ describe('add function', () => {
       </ConceptCard>
 
       <ConceptCard
+        id="63"
         number={63}
         title="Supertest"
         theory={{
@@ -4254,6 +4501,7 @@ describe('Users API', () => {
       </ConceptCard>
 
       <ConceptCard
+        id="64"
         number={64}
         title="Debugging Node Apps"
         theory={{
@@ -4325,6 +4573,7 @@ console.table(array);
       </ConceptCard>
 
       <ConceptCard
+        id="65"
         number={65}
         title="Logging"
         theory={{
@@ -4395,15 +4644,16 @@ log.error('Database connection failed');`}
 }
 
 // ========== PERFORMANCE & SCALABILITY (66-72) ==========
-function PerformanceScalability() {
+function PerformanceScalability({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">⚙️ Performance & Scalability</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">⚙️ Performance & Scalability</h3>
         <p className="text-purple-100 break-words">Optimizing Node.js applications for performance</p>
       </div>
 
       <ConceptCard
+        id="66"
         number={66}
         title="Clustering"
         priority="🔥"
@@ -4458,6 +4708,7 @@ if (cluster.isMaster) {
       </ConceptCard>
 
       <ConceptCard
+        id="67"
         number={67}
         title="Worker Threads"
         theory={{
@@ -4523,6 +4774,7 @@ parentPort.postMessage(result);`}
       </ConceptCard>
 
       <ConceptCard
+        id="68"
         number={68}
         title="Load Balancing"
         theory={{
@@ -4586,6 +4838,7 @@ if (cluster.isMaster) {
       </ConceptCard>
 
       <ConceptCard
+        id="69"
         number={69}
         title="Caching (Redis)"
         priority="🔥"
@@ -4661,6 +4914,7 @@ async function getUsers() {
       </ConceptCard>
 
       <ConceptCard
+        id="70"
         number={70}
         title="Compression"
         theory={{
@@ -4716,6 +4970,7 @@ app.get('/api/data', (req, res) => {
       </ConceptCard>
 
       <ConceptCard
+        id="71"
         number={71}
         title="Memory Management"
         theory={{
@@ -4787,6 +5042,7 @@ readStream.pipe(writeStream);`}
       </ConceptCard>
 
       <ConceptCard
+        id="72"
         number={72}
         title="Performance Optimization"
         priority="🔥"
@@ -4860,15 +5116,16 @@ console.log(\`Operation took \${duration}ms\`);`}
 }
 
 // ========== DEVOPS & DEPLOYMENT (73-77) ==========
-function DevOpsDeployment() {
+function DevOpsDeployment({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🐳 DevOps & Deployment</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🐳 DevOps & Deployment</h3>
         <p className="text-blue-100 break-words">Deploying and managing Node.js applications</p>
       </div>
 
       <ConceptCard
+        id="73"
         number={73}
         title="Environment Configurations"
         theory={{
@@ -4941,6 +5198,7 @@ const config = require('config');
       </ConceptCard>
 
       <ConceptCard
+        id="74"
         number={74}
         title="Process Managers (PM2)"
         priority="🔥"
@@ -5018,6 +5276,7 @@ pm2 save`}
       </ConceptCard>
 
       <ConceptCard
+        id="75"
         number={75}
         title="Docker with Node"
         priority="🔥"
@@ -5110,6 +5369,7 @@ docker-compose up -d`}
       </ConceptCard>
 
       <ConceptCard
+        id="76"
         number={76}
         title="CI/CD"
         theory={{
@@ -5198,6 +5458,7 @@ jobs:
       </ConceptCard>
 
       <ConceptCard
+        id="77"
         number={77}
         title="Deployment Strategies"
         theory={{
@@ -5258,15 +5519,16 @@ kubectl rollout undo deployment/myapp  // Rollback`}
 }
 
 // ========== ARCHITECTURE & BEST PRACTICES (78-82) ==========
-function ArchitectureBestPractices() {
+function ArchitectureBestPractices({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🧱 Architecture & Best Practices</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🧱 Architecture & Best Practices</h3>
         <p className="text-green-100 break-words">Building maintainable Node.js applications</p>
       </div>
 
       <ConceptCard
+        id="78"
         number={78}
         title="Project Structure"
         priority="🔥"
@@ -5351,6 +5613,7 @@ exports.getAllUsers = async (req, res, next) => {
       </ConceptCard>
 
       <ConceptCard
+        id="79"
         number={79}
         title="Separation of Concerns"
         priority="🔥"
@@ -5426,6 +5689,7 @@ class User {
       </ConceptCard>
 
       <ConceptCard
+        id="80"
         number={80}
         title="Service Layer Pattern"
         theory={{
@@ -5518,6 +5782,7 @@ exports.getUser = async (req, res, next) => {
       </ConceptCard>
 
       <ConceptCard
+        id="81"
         number={81}
         title="Dependency Injection"
         theory={{
@@ -5600,6 +5865,7 @@ const userService = createUserService(db, logger);`}
       </ConceptCard>
 
       <ConceptCard
+        id="82"
         number={82}
         title="Clean Code Practices"
         priority="🔥"
@@ -5699,15 +5965,16 @@ const isUserAuthenticated = checkAuthentication(user);`}
 }
 
 // ========== ADVANCED NODE.JS CONCEPTS (83-88) ==========
-function AdvancedConcepts() {
+function AdvancedConcepts({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
-    <div className="space-y-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-full overflow-x-hidden">
       <div className="bg-gradient-to-r from-pink-500 to-rose-500 rounded-xl p-6 text-white w-full max-w-full overflow-hidden">
-        <h3 className="text-3xl font-bold mb-2 break-words">🌍 Advanced Node.js Concepts</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 break-words">🌍 Advanced Node.js Concepts</h3>
         <p className="text-pink-100 break-words">Advanced topics for experienced developers</p>
       </div>
 
       <ConceptCard
+        id="83"
         number={83}
         title="Microservices"
         theory={{
@@ -5800,6 +6067,7 @@ services:
       </ConceptCard>
 
       <ConceptCard
+        id="84"
         number={84}
         title="Message Queues (RabbitMQ, Kafka)"
         theory={{
@@ -5903,6 +6171,7 @@ async function consumeEvents() {
       </ConceptCard>
 
       <ConceptCard
+        id="85"
         number={85}
         title="WebSockets"
         priority="🔥"
@@ -5993,6 +6262,7 @@ socket.on('message', (data) => {
       </ConceptCard>
 
       <ConceptCard
+        id="86"
         number={86}
         title="Server-Sent Events"
         theory={{
@@ -6074,6 +6344,7 @@ eventSource.onmessage = (event) => {
       </ConceptCard>
 
       <ConceptCard
+        id="87"
         number={87}
         title="GraphQL"
         theory={{
@@ -6176,6 +6447,7 @@ app.listen(4000, () => {
       </ConceptCard>
 
       <ConceptCard
+        id="88"
         number={88}
         title="Serverless Functions"
         theory={{
@@ -6261,6 +6533,7 @@ functions:
 
 // Helper component for concept cards
 interface ConceptCardProps {
+  id?: string;
   number: number;
   title: string;
   description?: string;
@@ -6279,6 +6552,7 @@ interface ConceptCardProps {
 }
 
 function ConceptCard({
+  id,
   number,
   title,
   description,
@@ -6289,7 +6563,10 @@ function ConceptCard({
   const [showExamples, setShowExamples] = useState(false);
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-blue-500 w-full max-w-full flex flex-col overflow-hidden">
+    <div 
+      id={id ? `concept-${id}` : undefined}
+      className="bg-white rounded-xl p-6 shadow-md border-l-4 border-blue-500 w-full max-w-full flex flex-col overflow-hidden scroll-mt-4"
+    >
       <div className="flex flex-wrap items-center gap-3 mb-4 w-full">
         <span className="text-2xl font-bold text-blue-500 flex-shrink-0">#{number}</span>
         <h4 className="text-2xl font-bold text-gray-900 break-words flex-1 min-w-0">{title}</h4>

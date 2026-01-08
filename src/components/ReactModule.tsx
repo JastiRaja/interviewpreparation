@@ -5,99 +5,343 @@ import TheorySection from "./TheorySection";
 
 export default function ReactModule() {
   const [activeSection, setActiveSection] = useState("core");
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["core"]));
+  const [activeConcept, setActiveConcept] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const sections = [
-    { id: "core", title: "Core/Beginner", icon: "🔰", count: "1-7" },
-    { id: "hooks", title: "Hooks", icon: "🪝", count: "8-15" },
-    { id: "dataflow", title: "Data Flow", icon: "🧠", count: "16-20" },
-    { id: "styling", title: "Styling", icon: "🎨", count: "21-25" },
-    { id: "routing", title: "Routing", icon: "🌐", count: "26" },
-    { id: "state", title: "State Management", icon: "📦", count: "27-30" },
-    { id: "effects", title: "Side Effects", icon: "🔄", count: "31-35" },
-    { id: "performance", title: "Performance", icon: "🚀", count: "36-41" },
-    { id: "testing", title: "Testing", icon: "🧪", count: "42-44" },
-    { id: "advanced", title: "Advanced", icon: "🧱", count: "45-50" },
-    { id: "tooling", title: "Tooling", icon: "🛠️", count: "51-55" },
-    { id: "architecture", title: "Architecture", icon: "🏗️", count: "56-60" },
+    { 
+      id: "core", 
+      title: "Core/Beginner", 
+      icon: "🔰", 
+      count: "1-7",
+      concepts: [
+        { id: "1", title: "Components", number: 1 },
+        { id: "2", title: "JSX", number: 2 },
+        { id: "3", title: "Props", number: 3 },
+        { id: "4", title: "State", number: 4 },
+        { id: "5", title: "Events", number: 5 },
+        { id: "6", title: "Conditional Rendering", number: 6 },
+        { id: "7", title: "Lists & Keys", number: 7 },
+      ]
+    },
+    { 
+      id: "hooks", 
+      title: "Hooks", 
+      icon: "🪝", 
+      count: "8-15",
+      concepts: [
+        { id: "8", title: "useState", number: 8 },
+        { id: "9", title: "useEffect", number: 9 },
+        { id: "10", title: "useContext", number: 10 },
+        { id: "11", title: "useRef", number: 11 },
+        { id: "12", title: "useMemo", number: 12 },
+        { id: "13", title: "useCallback", number: 13 },
+        { id: "14", title: "useReducer", number: 14 },
+        { id: "15", title: "Custom Hooks", number: 15 },
+      ]
+    },
+    { 
+      id: "dataflow", 
+      title: "Data Flow", 
+      icon: "🧠", 
+      count: "16-20",
+      concepts: [
+        { id: "16", title: "One-way Data Binding", number: 16 },
+        { id: "17", title: "Lifting State Up", number: 17 },
+        { id: "18", title: "Controlled vs Uncontrolled Components", number: 18 },
+        { id: "19", title: "Prop Drilling", number: 19 },
+        { id: "20", title: "Context API", number: 20 },
+      ]
+    },
+    { 
+      id: "styling", 
+      title: "Styling", 
+      icon: "🎨", 
+      count: "21-25",
+      concepts: [
+        { id: "21", title: "Inline Styling", number: 21 },
+        { id: "22", title: "CSS Files", number: 22 },
+        { id: "23", title: "CSS Modules", number: 23 },
+        { id: "24", title: "Styled Components", number: 24 },
+        { id: "25", title: "Tailwind CSS", number: 25 },
+      ]
+    },
+    { 
+      id: "routing", 
+      title: "Routing", 
+      icon: "🌐", 
+      count: "26",
+      concepts: [
+        { id: "26", title: "React Router", number: 26 },
+      ]
+    },
+    { 
+      id: "state", 
+      title: "State Management", 
+      icon: "📦", 
+      count: "27-30",
+      concepts: [
+        { id: "27", title: "Redux", number: 27 },
+        { id: "28", title: "Zustand", number: 28 },
+        { id: "29", title: "Jotai", number: 29 },
+        { id: "30", title: "Recoil", number: 30 },
+      ]
+    },
+    { 
+      id: "effects", 
+      title: "Side Effects", 
+      icon: "🔄", 
+      count: "31-35",
+      concepts: [
+        { id: "31", title: "useEffect Patterns", number: 31 },
+        { id: "32", title: "Data Fetching", number: 32 },
+        { id: "33", title: "Cleanup Functions", number: 33 },
+        { id: "34", title: "Dependencies Array", number: 34 },
+        { id: "35", title: "useLayoutEffect", number: 35 },
+      ]
+    },
+    { 
+      id: "performance", 
+      title: "Performance", 
+      icon: "🚀", 
+      count: "36-41",
+      concepts: [
+        { id: "36", title: "React.memo", number: 36 },
+        { id: "37", title: "Code Splitting", number: 37 },
+        { id: "38", title: "Lazy Loading", number: 38 },
+        { id: "39", title: "Suspense", number: 39 },
+        { id: "40", title: "Virtual DOM", number: 40 },
+        { id: "41", title: "Optimization Techniques", number: 41 },
+      ]
+    },
+    { 
+      id: "testing", 
+      title: "Testing", 
+      icon: "🧪", 
+      count: "42-44",
+      concepts: [
+        { id: "42", title: "Jest", number: 42 },
+        { id: "43", title: "React Testing Library", number: 43 },
+        { id: "44", title: "Unit vs Integration Tests", number: 44 },
+      ]
+    },
+    { 
+      id: "advanced", 
+      title: "Advanced", 
+      icon: "🧱", 
+      count: "45-50",
+      concepts: [
+        { id: "45", title: "Error Boundaries", number: 45 },
+        { id: "46", title: "Higher Order Components (HOC)", number: 46 },
+        { id: "47", title: "Render Props", number: 47 },
+        { id: "48", title: "Portals", number: 48 },
+        { id: "49", title: "Refs & forwardRef", number: 49 },
+        { id: "50", title: "Concurrent Rendering (React 18)", number: 50 },
+      ]
+    },
+    { 
+      id: "tooling", 
+      title: "Tooling", 
+      icon: "🛠️", 
+      count: "51-55",
+      concepts: [
+        { id: "51", title: "Vite / CRA", number: 51 },
+        { id: "52", title: "ESLint & Prettier", number: 52 },
+        { id: "53", title: "Babel", number: 53 },
+        { id: "54", title: "Webpack", number: 54 },
+        { id: "55", title: "TypeScript with React", number: 55 },
+      ]
+    },
+    { 
+      id: "architecture", 
+      title: "Architecture", 
+      icon: "🏗️", 
+      count: "56-60",
+      concepts: [
+        { id: "56", title: "Component Design Patterns", number: 56 },
+        { id: "57", title: "Separation of Concerns", number: 57 },
+        { id: "58", title: "Atomic Design", number: 58 },
+        { id: "59", title: "Folder Structure", number: 59 },
+        { id: "60", title: "Reusable Components", number: 60 },
+      ]
+    },
   ];
+
+  const toggleSection = (sectionId: string) => {
+    setExpandedSections((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(sectionId)) {
+        newSet.delete(sectionId);
+      } else {
+        newSet.add(sectionId);
+        setActiveSection(sectionId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleConceptClick = (sectionId: string, conceptId: string) => {
+    setActiveSection(sectionId);
+    setActiveConcept(conceptId);
+    setExpandedSections((prev) => new Set(prev).add(sectionId));
+    // Close sidebar on mobile after selection
+    if (window.innerWidth < 768) {
+      setTimeout(() => setSidebarOpen(false), 0);
+    }
+    
+    setTimeout(() => {
+      const element = document.getElementById(`concept-${conceptId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
 
   const renderContent = () => {
     switch (activeSection) {
       case "core":
-        return <CoreConcepts />;
+        return <CoreConcepts activeConcept={activeConcept} />;
       case "hooks":
-        return <HooksConcepts />;
+        return <HooksConcepts activeConcept={activeConcept} />;
       case "dataflow":
-        return <DataFlowConcepts />;
+        return <DataFlowConcepts activeConcept={activeConcept} />;
       case "styling":
-        return <StylingConcepts />;
+        return <StylingConcepts activeConcept={activeConcept} />;
       case "routing":
-        return <RoutingConcepts />;
+        return <RoutingConcepts activeConcept={activeConcept} />;
       case "state":
-        return <StateManagementConcepts />;
+        return <StateManagementConcepts activeConcept={activeConcept} />;
       case "effects":
-        return <SideEffectsConcepts />;
+        return <SideEffectsConcepts activeConcept={activeConcept} />;
       case "performance":
-        return <PerformanceConcepts />;
+        return <PerformanceConcepts activeConcept={activeConcept} />;
       case "testing":
-        return <TestingConcepts />;
+        return <TestingConcepts activeConcept={activeConcept} />;
       case "advanced":
-        return <AdvancedConcepts />;
+        return <AdvancedConcepts activeConcept={activeConcept} />;
       case "tooling":
-        return <ToolingConcepts />;
+        return <ToolingConcepts activeConcept={activeConcept} />;
       case "architecture":
-        return <ArchitectureConcepts />;
+        return <ArchitectureConcepts activeConcept={activeConcept} />;
       default:
-        return <CoreConcepts />;
+        return <CoreConcepts activeConcept={activeConcept} />;
     }
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-4xl font-bold mb-2 text-gray-900">
-          React.js - Complete Guide
-        </h2>
-        <p className="text-gray-600">
-          Master all 60 React concepts from basics to advanced
-        </p>
-      </div>
+    <div className="flex flex-col md:flex-row gap-3 md:gap-4 h-full w-full relative">
+      {/* Mobile Menu Button - Only show on larger mobile/tablet */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="hidden sm:flex md:hidden fixed top-[72px] left-3 z-50 bg-blue-500 text-white p-2 rounded-lg shadow-lg hover:bg-blue-600 transition-colors"
+        aria-label="Toggle sidebar"
+      >
+        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
 
-      {/* Section Tabs - Scrollable */}
-      <div className="overflow-x-auto">
-        <div className="flex gap-2 border-b border-gray-200 min-w-max pb-2">
-          {sections.map((section) => (
-            <button
-              key={section.id}
-              onClick={() => setActiveSection(section.id)}
-              className={`px-4 py-2 font-semibold transition-colors border-b-2 whitespace-nowrap ${
-                activeSection === section.id
-                  ? "border-blue-500 text-blue-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              <span className="mr-2">{section.icon}</span>
-              {section.title}
-              <span className="ml-2 text-xs opacity-75">
-                ({section.count})
-              </span>
-            </button>
-          ))}
+      {/* Mobile Floating Button for Small Screens */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="sm:hidden fixed bottom-20 right-4 z-40 bg-blue-500 text-white p-3 rounded-full shadow-2xl hover:shadow-3xl transition-all hover:scale-110 active:scale-95"
+        aria-label="Toggle module menu"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40 top-[64px] sm:top-[72px]"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Left Sidebar - Vertical Navigation - Responsive */}
+      <div className={`
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        fixed md:sticky top-[64px] sm:top-[72px] md:top-0 left-0 z-40
+        w-[280px] sm:w-64 md:w-64 flex-shrink-0 
+        bg-white rounded-xl shadow-md p-2 sm:p-3 
+        overflow-y-auto h-[calc(100vh-64px)] sm:h-[calc(100vh-72px)] md:max-h-[calc(100vh-120px)] 
+        transition-transform duration-300 ease-in-out
+      `}>
+        <div className="mb-2 sm:mb-3 pb-2 sm:pb-3 border-b border-gray-200">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900">React.js</h2>
+          <p className="text-xs text-gray-600 mt-0.5">
+            Complete Guide
+          </p>
+        </div>
+
+        <div className="space-y-1.5">
+          {sections.map((section) => {
+            const isExpanded = expandedSections.has(section.id);
+            const isActive = activeSection === section.id;
+
+            return (
+              <div key={section.id} className="border border-gray-200 rounded-md overflow-hidden">
+                <button
+                  onClick={() => toggleSection(section.id)}
+                  className={`w-full px-3 py-2 text-left font-medium transition-colors flex items-center justify-between text-sm ${
+                    isActive
+                      ? "bg-blue-50 text-blue-700 border-l-4 border-blue-500"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                    <span className="text-base flex-shrink-0">{section.icon}</span>
+                    <span className="truncate">{section.title}</span>
+                    <span className="text-xs opacity-75 flex-shrink-0">({section.count})</span>
+                  </div>
+                  <span className={`transition-transform text-xs flex-shrink-0 ml-1 ${isExpanded ? "rotate-180" : ""}`}>
+                    ▼
+                  </span>
+                </button>
+
+                {isExpanded && (
+                  <div className="bg-gray-50 border-t border-gray-200">
+                    {section.concepts.map((concept) => (
+                      <button
+                        key={concept.id}
+                        onClick={() => handleConceptClick(section.id, concept.id)}
+                        className={`w-full px-4 py-1.5 text-left text-xs transition-colors flex items-center gap-1.5 ${
+                          activeConcept === concept.id
+                            ? "bg-blue-100 text-blue-700 font-semibold border-l-4 border-blue-500"
+                            : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                        }`}
+                      >
+                        <span className="text-blue-500 font-semibold text-xs flex-shrink-0">#{concept.number}</span>
+                        <span className="flex-1 text-left truncate">{concept.title}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Content */}
-      <div className="mt-6">{renderContent()}</div>
+      {/* Right Content Area */}
+      <div className="flex-1 min-w-0 max-w-full mt-0 md:mt-0">
+        <div className="w-full max-w-full overflow-x-hidden px-0">
+          {renderContent()}
+        </div>
+      </div>
     </div>
   );
 }
 
 // ========== CORE/BEGINNER CONCEPTS (1-7) ==========
-function CoreConcepts() {
+function CoreConcepts({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
     <div className="space-y-8">
-      <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl p-6 text-white">
-        <h3 className="text-3xl font-bold mb-2">🔰 Core/Beginner Concepts</h3>
+      <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl p-4 sm:p-5 md:p-6 text-white">
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">🔰 Core/Beginner Concepts</h3>
         <p className="text-blue-100">
           Master the fundamentals that every React developer must know
         </p>
@@ -105,6 +349,7 @@ function CoreConcepts() {
 
       {/* 1. Components */}
       <ConceptCard
+        id="1"
         number={1}
         title="Components"
         description="Building blocks of React applications"
@@ -189,6 +434,7 @@ function App() {
 
       {/* 2. JSX */}
       <ConceptCard
+        id="2"
         number={2}
         title="JSX"
         description="JavaScript + HTML syntax"
@@ -272,6 +518,7 @@ const element = (
 
       {/* 3. Props */}
       <ConceptCard
+        id="3"
         number={3}
         title="Props"
         description="Passing data to components"
@@ -373,6 +620,7 @@ function Button({
 
       {/* 4. State */}
       <ConceptCard
+        id="4"
         number={4}
         title="State"
         description="Component state management"
@@ -464,6 +712,7 @@ function Counter() {
 
       {/* 5. Events */}
       <ConceptCard
+        id="5"
         number={5}
         title="Events"
         description="Handling user interactions"
@@ -561,6 +810,7 @@ function Counter() {
 
       {/* 6. Conditional Rendering */}
       <ConceptCard
+        id="6"
         number={6}
         title="Conditional Rendering"
         description="Render different content based on conditions"
@@ -622,6 +872,7 @@ function Counter() {
 
       {/* 7. Lists & Keys */}
       <ConceptCard
+        id="7"
         number={7}
         title="Lists & Keys"
         description="Rendering arrays of data"
@@ -715,11 +966,11 @@ function TodoList({ todos }: { todos: Todo[] }) {
 }
 
 // ========== HOOKS CONCEPTS (8-15) ==========
-function HooksConcepts() {
+function HooksConcepts({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
     <div className="space-y-8">
       <div className="bg-gradient-to-r from-green-500 to-teal-500 rounded-xl p-6 text-white">
-        <h3 className="text-3xl font-bold mb-2">🪝 Hooks</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">🪝 Hooks</h3>
         <p className="text-green-100">
           Essential hooks every React developer must master
         </p>
@@ -727,6 +978,7 @@ function HooksConcepts() {
 
       {/* 8. useState */}
       <ConceptCard 
+        id="8"
         number={8} 
         title="useState" 
         priority="🔥"
@@ -785,8 +1037,9 @@ function Counter() {
       </ConceptCard>
 
       {/* 9. useEffect */}
-      <ConceptCard 
-        number={9} 
+      <ConceptCard
+        id="9"
+        number={9}
         title="useEffect" 
         priority="🔥"
         theory={{
@@ -863,8 +1116,9 @@ function DataFetcher({ userId }: { userId: number }) {
       </ConceptCard>
 
       {/* 10. useContext */}
-      <ConceptCard 
-        number={10} 
+      <ConceptCard
+        id="10"
+        number={10}
         title="useContext"
         theory={{
           what: "useContext is a React Hook that allows you to consume a React Context value. It lets you access context data without prop drilling.",
@@ -950,8 +1204,9 @@ function App() {
       </ConceptCard>
 
       {/* 11. useRef */}
-      <ConceptCard 
-        number={11} 
+      <ConceptCard
+        id="11"
+        number={11}
         title="useRef"
         theory={{
           what: "useRef is a React Hook that returns a mutable ref object that persists across renders. It can hold a reference to a DOM element or store any mutable value that doesn't trigger re-renders when changed.",
@@ -1012,8 +1267,9 @@ function TextInput() {
       </ConceptCard>
 
       {/* 12. useMemo */}
-      <ConceptCard 
-        number={12} 
+      <ConceptCard
+        id="12"
+        number={12}
         title="useMemo"
         theory={{
           what: "useMemo is a React Hook that memoizes expensive calculations. It returns a memoized value that only recalculates when dependencies change, preventing unnecessary recalculations on every render.",
@@ -1075,8 +1331,9 @@ function ProductList({ products }: { products: Product[] }) {
       </ConceptCard>
 
       {/* 13. useCallback */}
-      <ConceptCard 
-        number={13} 
+      <ConceptCard
+        id="13"
+        number={13}
         title="useCallback"
         theory={{
           what: "useCallback is a React Hook that memoizes functions. It returns a memoized callback that only changes when dependencies change, preventing unnecessary re-renders of child components that receive the function as a prop.",
@@ -1139,8 +1396,9 @@ const ExpensiveChild = memo(({ onClick }: { onClick: () => void }) => {
       </ConceptCard>
 
       {/* 14. useReducer */}
-      <ConceptCard 
-        number={14} 
+      <ConceptCard
+        id="14"
+        number={14}
         title="useReducer"
         theory={{
           what: "useReducer is a React Hook that manages complex state using a reducer function. It's an alternative to useState, especially useful when state logic is complex or involves multiple sub-values. It follows the reducer pattern similar to Redux.",
@@ -1222,8 +1480,9 @@ function Counter() {
       </ConceptCard>
 
       {/* 15. Custom Hooks */}
-      <ConceptCard 
-        number={15} 
+      <ConceptCard
+        id="15"
+        number={15}
         title="Custom Hooks"
         theory={{
           what: "Custom Hooks are JavaScript functions that start with 'use' and can call other Hooks. They allow you to extract component logic into reusable functions, sharing stateful logic between components without changing component hierarchy.",
@@ -1311,14 +1570,15 @@ function MyComponent() {
 // Continue with other sections... (Due to length, I'll create separate components)
 // For now, let me add placeholder components for the remaining sections
 
-function DataFlowConcepts() {
+function DataFlowConcepts({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
     <div className="space-y-8">
       <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl p-6 text-white">
-        <h3 className="text-3xl font-bold mb-2">🧠 Component & Data Flow</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">🧠 Component & Data Flow</h3>
         <p className="text-purple-100">Understanding how data flows in React</p>
       </div>
       <ConceptCard 
+        id="16"
         number={16} 
         title="One-way Data Binding"
         theory={{
@@ -1372,6 +1632,7 @@ function Child({ onIncrement }: { onIncrement: () => void }) {
       </ConceptCard>
 
       <ConceptCard 
+        id="17"
         number={17} 
         title="Lifting State Up"
         theory={{
@@ -1426,6 +1687,7 @@ function Calculator() {
       </ConceptCard>
 
       <ConceptCard 
+        id="18"
         number={18} 
         title="Controlled vs Uncontrolled Components" 
         priority="🔥"
@@ -1490,6 +1752,7 @@ function UncontrolledInput() {
       </ConceptCard>
 
       <ConceptCard 
+        id="19"
         number={19} 
         title="Prop Drilling"
         theory={{
@@ -1548,6 +1811,7 @@ function UserMenu() {
       </ConceptCard>
 
       <ConceptCard 
+        id="20"
         number={20} 
         title="Context API" 
         priority="🔥"
@@ -1586,15 +1850,16 @@ function UserMenu() {
   );
 }
 
-function StylingConcepts() {
+function StylingConcepts({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
     <div className="space-y-8">
       <div className="bg-gradient-to-r from-pink-500 to-red-500 rounded-xl p-6 text-white">
-        <h3 className="text-3xl font-bold mb-2">🎨 Styling in React</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">🎨 Styling in React</h3>
         <p className="text-pink-100">Different ways to style React components</p>
       </div>
 
       <ConceptCard 
+        id="21"
         number={21} 
         title="Inline Styling"
         theory={{
@@ -1649,6 +1914,7 @@ function DynamicButton({ isActive }: { isActive: boolean }) {
       </ConceptCard>
 
       <ConceptCard 
+        id="22"
         number={22} 
         title="CSS Files"
         theory={{
@@ -1693,6 +1959,7 @@ function Button() {
       </ConceptCard>
 
       <ConceptCard 
+        id="23"
         number={23} 
         title="CSS Modules"
         theory={{
@@ -1736,6 +2003,7 @@ function Button() {
       </ConceptCard>
 
       <ConceptCard 
+        id="24"
         number={24} 
         title="Styled Components"
         theory={{
@@ -1793,6 +2061,7 @@ const Container = styled.div<{ isActive: boolean }>\`
       </ConceptCard>
 
       <ConceptCard 
+        id="25"
         number={25} 
         title="Tailwind CSS" 
         priority="🔥"
@@ -1847,14 +2116,15 @@ function Button({ variant }: { variant: 'primary' | 'secondary' }) {
   );
 }
 
-function RoutingConcepts() {
+function RoutingConcepts({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
     <div className="space-y-8">
       <div className="bg-gradient-to-r from-indigo-500 to-blue-500 rounded-xl p-6 text-white">
-        <h3 className="text-3xl font-bold mb-2">🌐 Routing & Navigation</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">🌐 Routing & Navigation</h3>
         <p className="text-indigo-100">React Router for navigation</p>
       </div>
       <ConceptCard 
+        id="26"
         number={26} 
         title="React Router" 
         priority="🔥"
@@ -1929,15 +2199,16 @@ function Login() {
   );
 }
 
-function StateManagementConcepts() {
+function StateManagementConcepts({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
     <div className="space-y-8">
       <div className="bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl p-6 text-white">
-        <h3 className="text-3xl font-bold mb-2">📦 State Management</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">📦 State Management</h3>
         <p className="text-yellow-100">Managing application state</p>
       </div>
 
       <ConceptCard 
+        id="27"
         number={27} 
         title="Local State"
         theory={{
@@ -1973,6 +2244,7 @@ function Counter() {
       </ConceptCard>
 
       <ConceptCard 
+        id="28"
         number={28} 
         title="Global State"
         theory={{
@@ -2019,6 +2291,7 @@ function App() {
       </ConceptCard>
 
       <ConceptCard 
+        id="29"
         number={29} 
         title="Redux / Redux Toolkit" 
         priority="🔥"
@@ -2091,6 +2364,7 @@ function App() {
       </ConceptCard>
 
       <ConceptCard 
+        id="30"
         number={30} 
         title="Zustand / Jotai / Recoil"
         theory={{
@@ -2151,15 +2425,16 @@ function Counter() {
   );
 }
 
-function SideEffectsConcepts() {
+function SideEffectsConcepts({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
     <div className="space-y-8">
       <div className="bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl p-6 text-white">
-        <h3 className="text-3xl font-bold mb-2">🔄 Side Effects & Data Fetching</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">🔄 Side Effects & Data Fetching</h3>
         <p className="text-cyan-100">Handling API calls and side effects</p>
       </div>
 
       <ConceptCard 
+        id="31"
         number={31} 
         title="useEffect Lifecycle" 
         priority="🔥"
@@ -2207,6 +2482,7 @@ useEffect(() => {
       </ConceptCard>
 
       <ConceptCard 
+        id="32"
         number={32} 
         title="Fetching APIs" 
         priority="🔥"
@@ -2266,6 +2542,7 @@ useEffect(() => {
       </ConceptCard>
 
       <ConceptCard 
+        id="33"
         number={33} 
         title="Axios / Fetch"
         theory={{
@@ -2317,6 +2594,7 @@ axios.post('/api/users', { name: 'John' })
       </ConceptCard>
 
       <ConceptCard 
+        id="34"
         number={34} 
         title="Loading & Error States" 
         priority="🔥"
@@ -2376,6 +2654,7 @@ axios.post('/api/users', { name: 'John' })
       </ConceptCard>
 
       <ConceptCard 
+        id="35"
         number={35} 
         title="Polling / Cleanup"
         theory={{
@@ -2431,15 +2710,16 @@ axios.post('/api/users', { name: 'John' })
   );
 }
 
-function PerformanceConcepts() {
+function PerformanceConcepts({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
     <div className="space-y-8">
       <div className="bg-gradient-to-r from-emerald-500 to-green-500 rounded-xl p-6 text-white">
-        <h3 className="text-3xl font-bold mb-2">🚀 Performance Optimization</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">🚀 Performance Optimization</h3>
         <p className="text-emerald-100">Optimizing React applications</p>
       </div>
 
       <ConceptCard 
+        id="36"
         number={36} 
         title="React.memo"
         theory={{
@@ -2499,7 +2779,7 @@ function Parent() {
         />
       </ConceptCard>
 
-      <ConceptCard number={37} title="Code Splitting">
+      <ConceptCard id="37" number={37} title="Code Splitting">
         <CodeExample
           title="Code Splitting"
           description="Load components only when needed"
@@ -2535,7 +2815,7 @@ function App() {
         />
       </ConceptCard>
 
-      <ConceptCard number={38} title="Lazy Loading">
+      <ConceptCard id="38" number={38} title="Lazy Loading">
         <CodeExample
           title="Lazy Loading"
           description="Load resources on demand"
@@ -2561,7 +2841,7 @@ function Image({ src, alt }: { src: string; alt: string }) {
         />
       </ConceptCard>
 
-      <ConceptCard number={39} title="Suspense">
+      <ConceptCard id="39" number={39} title="Suspense">
         <CodeExample
           title="Suspense"
           description="Show fallback while loading"
@@ -2589,6 +2869,7 @@ function App() {
       </ConceptCard>
 
       <ConceptCard 
+        id="40"
         number={40} 
         title="Virtual DOM"
         theory={{
@@ -2639,6 +2920,7 @@ function App() {
       </ConceptCard>
 
       <ConceptCard 
+        id="41"
         number={41} 
         title="Reconciliation"
         theory={{
@@ -2692,15 +2974,15 @@ function App() {
   );
 }
 
-function TestingConcepts() {
+function TestingConcepts({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
     <div className="space-y-8">
       <div className="bg-gradient-to-r from-violet-500 to-purple-500 rounded-xl p-6 text-white">
-        <h3 className="text-3xl font-bold mb-2">🧪 Testing</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">🧪 Testing</h3>
         <p className="text-violet-100">Testing React applications</p>
       </div>
 
-      <ConceptCard number={42} title="Jest">
+      <ConceptCard id="42" number={42} title="Jest">
         <CodeExample
           title="Jest Testing Framework"
           description="Install: npm install -D jest @testing-library/jest-dom"
@@ -2726,7 +3008,7 @@ test('calls onClick when clicked', () => {
         />
       </ConceptCard>
 
-      <ConceptCard number={43} title="React Testing Library" priority="🔥">
+      <ConceptCard id="43" number={43} title="React Testing Library" priority="🔥">
         <CodeExample
           title="React Testing Library"
           description="Test components like users interact with them"
@@ -2769,7 +3051,7 @@ test('user can type email and submit', async () => {
         />
       </ConceptCard>
 
-      <ConceptCard number={44} title="Unit vs Integration Tests">
+      <ConceptCard id="44" number={44} title="Unit vs Integration Tests">
         <CodeExample
           title="Test Types"
           description="Different levels of testing"
@@ -2797,15 +3079,15 @@ test('user can add todo and see it in list', () => {
   );
 }
 
-function AdvancedConcepts() {
+function AdvancedConcepts({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
     <div className="space-y-8">
       <div className="bg-gradient-to-r from-rose-500 to-pink-500 rounded-xl p-6 text-white">
-        <h3 className="text-3xl font-bold mb-2">🧱 Advanced React Concepts</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">🧱 Advanced React Concepts</h3>
         <p className="text-rose-100">Advanced patterns and techniques</p>
       </div>
 
-      <ConceptCard number={45} title="Error Boundaries">
+      <ConceptCard id="45" number={45} title="Error Boundaries">
         <CodeExample
           title="Error Boundaries"
           description="Catch JavaScript errors in component tree"
@@ -2853,7 +3135,7 @@ function App() {
         />
       </ConceptCard>
 
-      <ConceptCard number={46} title="Higher Order Components (HOC)">
+      <ConceptCard id="46" number={46} title="Higher Order Components (HOC)">
         <CodeExample
           title="HOC Pattern"
           description="Function that takes a component and returns a new component"
@@ -2878,7 +3160,7 @@ const ButtonWithLoading = withLoading(Button);
         />
       </ConceptCard>
 
-      <ConceptCard number={47} title="Render Props">
+      <ConceptCard id="47" number={47} title="Render Props">
         <CodeExample
           title="Render Props Pattern"
           description="Component that uses a function as a child"
@@ -2908,7 +3190,7 @@ function Mouse({ render }: { render: (mouse: { x: number; y: number }) => ReactN
         />
       </ConceptCard>
 
-      <ConceptCard number={48} title="Portals">
+      <ConceptCard id="48" number={48} title="Portals">
         <CodeExample
           title="Portals"
           description="Render children into a DOM node outside parent hierarchy"
@@ -2929,7 +3211,7 @@ function Modal({ children, isOpen }: { children: ReactNode; isOpen: boolean }) {
         />
       </ConceptCard>
 
-      <ConceptCard number={49} title="Refs & forwardRef">
+      <ConceptCard id="49" number={49} title="Refs & forwardRef">
         <CodeExample
           title="forwardRef"
           description="Forward refs to child components"
@@ -2977,7 +3259,7 @@ function Form() {
         />
       </ConceptCard>
 
-      <ConceptCard number={50} title="Concurrent Rendering (React 18)">
+      <ConceptCard id="50" number={50} title="Concurrent Rendering (React 18)">
         <CodeExample
           title="React 18 Features"
           description="Concurrent features and improvements"
@@ -3012,15 +3294,15 @@ function App() {
   );
 }
 
-function ToolingConcepts() {
+function ToolingConcepts({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
     <div className="space-y-8">
       <div className="bg-gradient-to-r from-slate-500 to-gray-500 rounded-xl p-6 text-white">
-        <h3 className="text-3xl font-bold mb-2">🛠️ Tooling & Ecosystem</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">🛠️ Tooling & Ecosystem</h3>
         <p className="text-slate-100">Development tools and setup</p>
       </div>
 
-      <ConceptCard number={51} title="Vite / CRA" priority="🔥">
+      <ConceptCard id="51" number={51} title="Vite / CRA" priority="🔥">
         <CodeExample
           title="Build Tools"
           description="Vite (modern, fast) vs Create React App (traditional)"
@@ -3045,7 +3327,7 @@ npx create-react-app my-app --template typescript
         />
       </ConceptCard>
 
-      <ConceptCard number={52} title="ESLint & Prettier">
+      <ConceptCard id="52" number={52} title="ESLint & Prettier">
         <CodeExample
           title="Code Quality Tools"
           description="Linting and formatting"
@@ -3075,7 +3357,7 @@ module.exports = {
         />
       </ConceptCard>
 
-      <ConceptCard number={53} title="Babel">
+      <ConceptCard id="53" number={53} title="Babel">
         <CodeExample
           title="Babel"
           description="JavaScript compiler (transpiles modern JS to older versions)"
@@ -3097,7 +3379,7 @@ module.exports = {
         />
       </ConceptCard>
 
-      <ConceptCard number={54} title="Webpack">
+      <ConceptCard id="54" number={54} title="Webpack">
         <CodeExample
           title="Webpack"
           description="Module bundler (used by CRA)"
@@ -3127,7 +3409,7 @@ module.exports = {
         />
       </ConceptCard>
 
-      <ConceptCard number={55} title="TypeScript with React" priority="🔥">
+      <ConceptCard id="55" number={55} title="TypeScript with React" priority="🔥">
         <CodeExample
           title="TypeScript Setup"
           description="This project uses TypeScript!"
@@ -3159,15 +3441,15 @@ module.exports = {
   );
 }
 
-function ArchitectureConcepts() {
+function ArchitectureConcepts({ activeConcept: _activeConcept }: { activeConcept: string | null }) {
   return (
     <div className="space-y-8">
       <div className="bg-gradient-to-r from-amber-500 to-yellow-500 rounded-xl p-6 text-white">
-        <h3 className="text-3xl font-bold mb-2">🏗️ Architectural Concepts</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">🏗️ Architectural Concepts</h3>
         <p className="text-amber-100">Design patterns and best practices</p>
       </div>
 
-      <ConceptCard number={56} title="Component Design Patterns">
+      <ConceptCard id="56" number={56} title="Component Design Patterns">
         <CodeExample
           title="Design Patterns"
           description="Common component patterns"
@@ -3199,7 +3481,7 @@ Tabs.Panel = ({ children }: { children: ReactNode }) => <div>{children}</div>;
         />
       </ConceptCard>
 
-      <ConceptCard number={57} title="Separation of Concerns">
+      <ConceptCard id="57" number={57} title="Separation of Concerns">
         <CodeExample
           title="Separation of Concerns"
           description="Organize code by responsibility"
@@ -3235,7 +3517,7 @@ function UserCard({ userId }: { userId: number }) {
         />
       </ConceptCard>
 
-      <ConceptCard number={58} title="Atomic Design">
+      <ConceptCard id="58" number={58} title="Atomic Design">
         <CodeExample
           title="Atomic Design"
           description="Component hierarchy: Atoms → Molecules → Organisms"
@@ -3280,7 +3562,7 @@ export function Header() {
         />
       </ConceptCard>
 
-      <ConceptCard number={59} title="Folder Structure">
+      <ConceptCard id="59" number={59} title="Folder Structure">
         <CodeExample
           title="Project Structure"
           description="Organize files logically"
@@ -3323,7 +3605,7 @@ src/
         />
       </ConceptCard>
 
-      <ConceptCard number={60} title="Reusable Components">
+      <ConceptCard id="60" number={60} title="Reusable Components">
         <CodeExample
           title="Reusable Components"
           description="Build components that can be used in multiple places"
@@ -3374,6 +3656,7 @@ function Button({
 
 // Helper component for concept cards
 interface ConceptCardProps {
+  id?: string;
   number: number;
   title: string;
   description?: string;
@@ -3392,6 +3675,7 @@ interface ConceptCardProps {
 }
 
 function ConceptCard({
+  id,
   number,
   title,
   description,
@@ -3402,7 +3686,10 @@ function ConceptCard({
   const [showExamples, setShowExamples] = useState(false);
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-blue-500 w-full flex flex-col overflow-hidden">
+    <div 
+      id={id ? `concept-${id}` : undefined}
+      className="bg-white rounded-xl p-6 shadow-md border-l-4 border-blue-500 w-full flex flex-col overflow-hidden scroll-mt-4"
+    >
       <div className="flex flex-wrap items-center gap-3 mb-4 w-full">
         <span className="text-2xl font-bold text-blue-500 flex-shrink-0">#{number}</span>
         <h4 className="text-2xl font-bold text-gray-900 break-words flex-1 min-w-0">{title}</h4>

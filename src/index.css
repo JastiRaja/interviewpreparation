@@ -68,3 +68,12 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Safe area support for devices with notches */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0);
+}
