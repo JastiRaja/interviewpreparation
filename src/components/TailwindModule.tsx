@@ -473,8 +473,8 @@ function ConceptCard({
             className="w-full py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-md z-10 relative"
             type="button"
           >
-            <span className="text-white font-semibold">{showExamples ? "Hide Examples" : "See Examples"}</span>
-            <span className="text-xl text-white">{showExamples ? "▲" : "▼"}</span>
+            <span className="text-black font-semibold">{showExamples ? "Hide Examples" : "See Examples"}</span>
+            <span className="text-xl text-black">{showExamples ? "▲" : "▼"}</span>
           </button>
           {showExamples && (
             <div className="mt-4 w-full max-w-full flex flex-col space-y-4 overflow-hidden">
