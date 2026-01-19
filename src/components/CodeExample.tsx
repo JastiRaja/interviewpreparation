@@ -36,7 +36,7 @@ export default function CodeExample({
       <div className="relative w-full">
         <button
           onClick={copyToClipboard}
-          className="absolute top-2 right-2 sm:top-3 sm:right-3 md:top-4 md:right-4 px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-800 text-white text-xs rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-1 sm:gap-2 z-10"
+          className="absolute top-2 right-2 sm:top-3 sm:right-3 md:top-4 md:right-4 px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-800 text-black text-xs rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-1 sm:gap-2 z-10"
         >
           {copied ? (
             <>

@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import CodeExample from "./CodeExample";
 import InteractiveCounter from "./InteractiveCounter";
 import TheorySection from "./TheorySection";
+import PracticalConcepts from "./PracticalConcepts";
+
 
 export default function ReactModule() {
   // Initialize from URL or defaults
@@ -200,6 +202,25 @@ export default function ReactModule() {
         { id: "60", title: "Reusable Components", number: 60 },
       ]
     },
+    { 
+  id: "practical", 
+  title: "Practical UI Patterns", 
+  icon: "🧩", 
+  count: "61-70",
+  concepts: [
+    { id: "61", title: "Card List Generation", number: 61 },
+    { id: "62", title: "Responsive Navbar", number: 62 },
+    { id: "63", title: "Modal Component", number: 63 },
+    { id: "64", title: "Tabs Component", number: 64 },
+    { id: "65", title: "Search & Filter", number: 65 },
+    { id: "66", title: "Pagination", number: 66 },
+    { id: "67", title: "Form Validation", number: 67 },
+    { id: "68", title: "Dashboard Layout", number: 68 },
+    { id: "69", title: "API Data Fetching UI", number: 69 },
+    { id: "70", title: "Reusable UI Components", number: 70 },
+  ]
+}
+
   ];
 
   const toggleSection = (sectionId: string) => {
@@ -304,6 +325,9 @@ export default function ReactModule() {
         return <ToolingConcepts activeConcept={activeConcept} />;
       case "architecture":
         return <ArchitectureConcepts activeConcept={activeConcept} />;
+      case "practical":
+        return <PracticalConcepts activeConcept={activeConcept} />;
+
       default:
         return <CoreConcepts activeConcept={activeConcept} />;
     }
@@ -3806,7 +3830,7 @@ function ConceptCard({
   priority,
   children,
   theory,
-}: ConceptCardProps) {
+  }: ConceptCardProps) {
   const [showExamples, setShowExamples] = useState(false);
 
   return (
@@ -3852,6 +3876,10 @@ function ConceptCard({
           )}
         </div>
       )}
+      
     </div>
+    
   );
 }
+
+
