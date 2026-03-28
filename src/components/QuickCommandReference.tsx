@@ -204,11 +204,14 @@ ON DUPLICATE KEY UPDATE name = VALUES(name);`,
     id: "mongodb",
     title: "MongoDB (mongosh)",
     summary: "Connect, CRUD, indexes, and aggregation examples.",
-    code: `# Connect
-mongosh "mongodb://USER:PASS@localhost:27017/mydb?authSource=admin"
+    code: `# Connect (local dev — no password in repo)
+mongosh mongodb://127.0.0.1:27017/mydb
 
-# Or Atlas
-mongosh "mongodb+srv://USER:PASS@cluster.mongodb.net/mydb"
+# With auth: use env vars or CLI flags — never commit usernames/passwords
+# mongosh -u "$MONGO_USER" -p "$MONGO_PASS" --authenticationDatabase admin mydb
+
+# Atlas: copy the private connection string only from Atlas → Connect (Drivers/Shell).
+# Put it in .env as MONGODB_URI (add .env to .gitignore), then: mongosh "$MONGODB_URI"
 
 -- Insert
 db.users.insertOne({ email: "a@example.com", createdAt: new Date() });
