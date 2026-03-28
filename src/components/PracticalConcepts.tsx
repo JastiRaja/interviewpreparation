@@ -512,7 +512,7 @@ function DemoBlock({
 ===================================================== */
 
 export default function PracticalConcepts({
-  activeConcept,
+  activeConcept: _activeConcept,
 }: {
   activeConcept: string | null;
 }) {

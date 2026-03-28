@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import CodeExample from "./CodeExample";
 import TheorySection from "./TheorySection";
+import CommandRecapPanel from "./CommandRecapPanel";
+import { tailwindCommandGroups } from "../data/techCommandRecaps";
 
 export default function TailwindModule() {
   // Initialize from URL or defaults
@@ -17,6 +19,7 @@ export default function TailwindModule() {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set([urlState.section]));
   const [activeConcept, setActiveConcept] = useState<string | null>(urlState.concept);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Update URL when section/concept changes
   useEffect(() => {
@@ -163,6 +166,20 @@ export default function TailwindModule() {
     },
   ];
 
+  const getFirstConceptIdForSection = (sectionId: string) => {
+    const section = sections.find((item) => item.id === sectionId);
+    return section?.concepts[0]?.id ?? null;
+  };
+
+  useEffect(() => {
+    if (!activeConcept) {
+      const firstConceptId = getFirstConceptIdForSection(activeSection);
+      if (firstConceptId) {
+        setActiveConcept(firstConceptId);
+      }
+    }
+  }, [activeSection, activeConcept]);
+
   const toggleSection = (sectionId: string) => {
     setExpandedSections((prev) => {
       const newSet = new Set(prev);
@@ -206,37 +223,45 @@ export default function TailwindModule() {
     }, 100);
   };
 
-  // Get all concepts in order for navigation
-  const getAllConcepts = () => {
-    const allConcepts: Array<{ sectionId: string; conceptId: string; number: number; title: string }> = [];
-    sections.forEach(section => {
-      section.concepts.forEach(concept => {
-        allConcepts.push({
-          sectionId: section.id,
-          conceptId: concept.id,
-          number: concept.number,
-          title: concept.title
-        });
-      });
-    });
-    return allConcepts.sort((a, b) => a.number - b.number);
+  // Navigate section-by-section (e.g. 1-8 -> 9-16)
+  const navigateSection = (direction: "next" | "prev") => {
+    const currentSectionIndex = sections.findIndex((section) => section.id === activeSection);
+    if (currentSectionIndex === -1) return;
+
+    const newSectionIndex = direction === "next" ? currentSectionIndex + 1 : currentSectionIndex - 1;
+    if (newSectionIndex < 0 || newSectionIndex >= sections.length) return;
+
+    const targetSection = sections[newSectionIndex];
+    const firstConceptId = targetSection.concepts[0]?.id;
+    if (!firstConceptId) return;
+
+    handleConceptClick(targetSection.id, firstConceptId);
   };
 
-  // Navigate to next/previous concept
-  const navigateConcept = (direction: 'next' | 'prev') => {
-    const allConcepts = getAllConcepts();
-    if (!activeConcept) return;
-    
-    const currentIndex = allConcepts.findIndex(c => c.conceptId === activeConcept);
-    if (currentIndex === -1) return;
-    
-    const newIndex = direction === 'next' 
-      ? (currentIndex + 1) % allConcepts.length
-      : (currentIndex - 1 + allConcepts.length) % allConcepts.length;
-    
-    const newConcept = allConcepts[newIndex];
-    handleConceptClick(newConcept.sectionId, newConcept.conceptId);
-  };
+  const currentSectionIndex = sections.findIndex((section) => section.id === activeSection);
+  const canNavigatePrev = currentSectionIndex > 0;
+  const canNavigateNext = currentSectionIndex > -1 && currentSectionIndex < sections.length - 1;
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+  const isSearchActive = normalizedSearchQuery.length > 0;
+  const filteredSections = sections
+    .map((section) => {
+      if (!isSearchActive) return section;
+
+      const sectionMatches =
+        section.title.toLowerCase().includes(normalizedSearchQuery) ||
+        section.count.toLowerCase().includes(normalizedSearchQuery);
+      const matchingConcepts = section.concepts.filter(
+        (concept) =>
+          concept.title.toLowerCase().includes(normalizedSearchQuery) ||
+          concept.id.includes(normalizedSearchQuery) ||
+          String(concept.number).includes(normalizedSearchQuery)
+      );
+
+      if (sectionMatches) return section;
+      if (matchingConcepts.length > 0) return { ...section, concepts: matchingConcepts };
+      return null;
+    })
+    .filter((section): section is (typeof sections)[number] => section !== null);
 
   const renderContent = () => {
     switch (activeSection) {
@@ -262,11 +287,11 @@ export default function TailwindModule() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-3 md:gap-4 h-full w-full relative">
+    <div className="relative flex min-h-0 w-full flex-1 flex-col gap-3 md:flex-row md:gap-4">
       {/* Mobile Menu Button - Only show on larger mobile/tablet */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="hidden sm:flex md:hidden fixed top-[72px] left-3 z-50 bg-blue-500 text-white p-2 rounded-lg shadow-lg hover:bg-blue-600 transition-colors"
+        className="hidden sm:flex md:hidden fixed top-[72px] left-3 z-50 bg-indigo-600 text-white p-2 rounded-xl shadow-lg shadow-indigo-600/15 hover:bg-indigo-700 transition-colors"
         aria-label="Toggle sidebar"
       >
         <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -277,7 +302,7 @@ export default function TailwindModule() {
       {/* Mobile Floating Button for Small Screens */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="sm:hidden fixed bottom-20 right-4 z-40 bg-blue-500 text-white p-3 rounded-full shadow-2xl hover:shadow-3xl transition-all hover:scale-110 active:scale-95"
+        className="sm:hidden fixed bottom-20 right-4 z-40 bg-indigo-600 text-white p-3 rounded-full shadow-xl shadow-indigo-600/20 transition-all hover:scale-110 active:scale-95 hover:bg-indigo-700"
         aria-label="Toggle module menu"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -295,34 +320,54 @@ export default function TailwindModule() {
 
       {/* Left Sidebar - Vertical Navigation - Responsive */}
       <div className={`
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-        fixed md:sticky top-[64px] sm:top-[72px] md:top-0 left-0 z-40
-        w-[280px] sm:w-64 md:w-64 flex-shrink-0 
-        bg-white rounded-xl shadow-md p-2 sm:p-3 
-        overflow-y-auto overflow-x-hidden h-[calc(100vh-64px-80px)] sm:h-[calc(100vh-72px-80px)] md:max-h-[calc(100vh-120px)] 
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+        fixed z-40 md:static md:z-auto
+        top-[64px] sm:top-[72px] md:top-auto left-0
+        w-[280px] sm:w-64 md:w-64 shrink-0
+        bg-white/85 backdrop-blur-xl rounded-2xl border border-zinc-200/80 shadow-xl shadow-zinc-900/6 p-3 sm:p-4
+        overflow-y-auto overflow-x-hidden overscroll-contain
+        h-[calc(100dvh-64px-5.75rem)] sm:h-[calc(100dvh-72px-5.75rem)] md:h-auto md:max-h-none md:min-h-0 md:self-stretch
         transition-transform duration-300 ease-in-out
         pb-20 md:pb-0
       `}>
-        <div className="mb-2 sm:mb-3 pb-2 sm:pb-3 border-b border-gray-200">
+        <div className="mb-2 sm:mb-3 pb-2 sm:pb-3 border-b border-zinc-200/80">
           <h2 className="text-lg sm:text-xl font-bold text-gray-900">Tailwind CSS</h2>
           <p className="text-xs text-gray-600 mt-0.5">
             Complete Guide
           </p>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search topics..."
+            className="mt-2 w-full rounded-lg border border-zinc-200 bg-zinc-50/80 px-3 py-2 text-xs text-zinc-800 placeholder:text-zinc-400 sm:text-sm focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+          />
+          <button
+            type="button"
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg border-2 border-cyan-300 bg-cyan-50 px-3 py-2 text-xs font-bold text-cyan-900 hover:bg-cyan-100 sm:text-sm"
+            onClick={() => {
+              document.getElementById("tailwind-command-recap")?.scrollIntoView({ behavior: "smooth", block: "start" });
+              if (window.innerWidth < 768) setSidebarOpen(false);
+            }}
+          >
+            <span aria-hidden>📋</span>
+            Tailwind command list
+          </button>
         </div>
 
         <div className="space-y-1.5">
-          {sections.map((section) => {
-            const isExpanded = expandedSections.has(section.id);
+          {filteredSections.map((section) => {
+            const isExpanded = isSearchActive ? true : expandedSections.has(section.id);
             const isActive = activeSection === section.id;
 
             return (
-              <div key={section.id} className="border border-gray-200 rounded-md overflow-hidden">
+              <div key={section.id} className="overflow-hidden rounded-xl border border-zinc-200/80 bg-white/40">
                 <button
-                  onClick={() => toggleSection(section.id)}
+                  onClick={() => !isSearchActive && toggleSection(section.id)}
                   className={`w-full px-3 py-2 text-left font-medium transition-colors flex items-center justify-between text-sm ${
                     isActive
-                      ? "bg-blue-50 text-blue-700 border-l-4 border-blue-500"
-                      : "bg-white text-gray-700 hover:bg-gray-50"
+                      ? "bg-indigo-50 text-indigo-900 border-l-[3px] border-indigo-500"
+                      : "bg-white/80 text-zinc-700 hover:bg-zinc-50"
                   }`}
                 >
                   <div className="flex items-center gap-1.5 flex-1 min-w-0">
@@ -330,24 +375,26 @@ export default function TailwindModule() {
                     <span className="truncate">{section.title}</span>
                     <span className="text-xs opacity-75 flex-shrink-0">({section.count})</span>
                   </div>
-                  <span className={`transition-transform text-xs flex-shrink-0 ml-1 ${isExpanded ? "rotate-180" : ""}`}>
-                    ▼
-                  </span>
+                  {!isSearchActive && (
+                    <span className={`transition-transform text-xs flex-shrink-0 ml-1 ${isExpanded ? "rotate-180" : ""}`}>
+                      ▼
+                    </span>
+                  )}
                 </button>
 
                 {isExpanded && (
-                  <div className="bg-gray-50 border-t border-gray-200">
+                  <div className="border-t border-zinc-200/80 bg-zinc-50/80">
                     {section.concepts.map((concept) => (
                       <button
                         key={concept.id}
                         onClick={() => handleConceptClick(section.id, concept.id)}
                         className={`w-full px-4 py-1.5 text-left text-xs transition-colors flex items-center gap-1.5 ${
                           activeConcept === concept.id
-                            ? "bg-blue-100 text-blue-700 font-semibold border-l-4 border-blue-500"
-                            : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                            ? "bg-indigo-100 text-indigo-900 font-semibold border-l-[3px] border-indigo-500"
+                            : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
                         }`}
                       >
-                        <span className="text-blue-500 font-semibold text-xs flex-shrink-0">#{concept.number}</span>
+                        <span className="text-indigo-600 font-semibold text-xs flex-shrink-0">#{concept.number}</span>
                         <span className="flex-1 text-left truncate">{concept.title}</span>
                       </button>
                     ))}
@@ -356,57 +403,72 @@ export default function TailwindModule() {
               </div>
             );
           })}
+          {isSearchActive && filteredSections.length === 0 && (
+            <div className="rounded-lg border border-zinc-200/80 bg-zinc-50 px-3 py-2 text-xs text-zinc-500">
+              No topics found.
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Right Content Area */}
-      <div className="flex-1 min-w-0 max-w-full mt-0 md:mt-0 relative">
+      {/* Right: scrollable content + pinned section footer */}
+      <div className="relative mt-0 flex min-h-0 min-w-0 flex-1 flex-col md:mt-0">
         {/* Mobile: View All Concepts Button - Always Visible */}
         <button
           onClick={() => setSidebarOpen(true)}
-          className="md:hidden fixed top-[72px] right-3 z-50 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-2 rounded-full shadow-lg hover:shadow-xl transition-all text-xs sm:text-sm font-semibold flex items-center gap-1.5"
+          className="md:hidden fixed top-[72px] right-3 z-50 bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-3 py-2 rounded-full shadow-lg shadow-indigo-600/20 hover:shadow-xl transition-all text-xs sm:text-sm font-semibold flex items-center gap-1.5"
           aria-label="View all concepts"
         >
           <span className="text-base">📚</span>
           <span className="hidden sm:inline">All Concepts</span>
         </button>
 
-        {/* Concept Navigation Bar - Mobile Only */}
+        <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-0">
+          <CommandRecapPanel
+            id="tailwind-command-recap"
+            variant="cyan"
+            title="Tailwind CSS command recap"
+            subtitle="Install, CLI, and build steps that usually pair with Vite or PostCSS."
+            groups={tailwindCommandGroups}
+          />
+          {renderContent()}
+        </div>
+
+        {/* Section Navigation Buttons - Bottom */}
         {activeConcept && (
-          <div className="md:hidden fixed top-[120px] left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm px-3 py-2">
-            <div className="flex items-center justify-between max-w-full">
+          <div className="mt-3 mb-1 shrink-0 rounded-2xl border border-zinc-200/90 bg-white/95 px-3 py-2.5 shadow-md shadow-zinc-900/5 backdrop-blur-sm sm:px-4 md:mt-4">
+            <div className="flex items-center justify-between gap-2 max-w-full">
               <button
-                onClick={() => navigateConcept('prev')}
-                className="flex items-center gap-1 px-2 py-1 text-xs text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
-                aria-label="Previous concept"
+                onClick={() => navigateSection("prev")}
+                className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs text-zinc-700 transition-colors hover:bg-indigo-50 hover:text-indigo-800 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent sm:px-3 sm:text-sm"
+                aria-label="Previous section"
+                disabled={!canNavigatePrev}
               >
                 <span>←</span>
-                <span className="hidden sm:inline">Prev</span>
+                <span>Previous Section</span>
               </button>
               <div className="flex-1 text-center px-2">
-                <span className="text-xs text-gray-500">Concept</span>
-                <span className="text-sm font-semibold text-gray-900 ml-1">
-                  {getAllConcepts().find(c => c.conceptId === activeConcept)?.number || ''}
+                <span className="text-xs font-medium text-zinc-500">Section</span>
+                <span className="ml-1 text-sm font-semibold text-zinc-900">
+                  {currentSectionIndex > -1 ? currentSectionIndex + 1 : ""}
                 </span>
-                <span className="text-xs text-gray-500 ml-1">
-                  / {getAllConcepts().length}
+                <span className="ml-1 text-xs text-zinc-500">/ {sections.length}</span>
+                <span className="ml-2 text-xs text-zinc-500">
+                  ({currentSectionIndex > -1 ? sections[currentSectionIndex].count : ""})
                 </span>
               </div>
               <button
-                onClick={() => navigateConcept('next')}
-                className="flex items-center gap-1 px-2 py-1 text-xs text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
-                aria-label="Next concept"
+                onClick={() => navigateSection("next")}
+                className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs text-zinc-700 transition-colors hover:bg-indigo-50 hover:text-indigo-800 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent sm:px-3 sm:text-sm"
+                aria-label="Next section"
+                disabled={!canNavigateNext}
               >
-                <span className="hidden sm:inline">Next</span>
+                <span>Next Section</span>
                 <span>→</span>
               </button>
             </div>
           </div>
         )}
-
-        <div className={`w-full max-w-full overflow-x-hidden px-0 ${activeConcept ? 'pt-16 md:pt-0' : 'pt-0'}`}>
-          {renderContent()}
-        </div>
       </div>
     </div>
   );
@@ -443,10 +505,10 @@ function ConceptCard({
   return (
     <div 
       id={id ? `concept-${id}` : undefined}
-      className="bg-white rounded-xl p-6 shadow-md border-l-4 border-blue-500 w-full max-w-full flex flex-col overflow-hidden scroll-mt-4"
+      className="w-full max-w-full scroll-mt-4 flex flex-col overflow-hidden rounded-2xl border border-zinc-200/80 border-l-4 border-l-indigo-500 bg-white p-6 shadow-sm ring-1 ring-zinc-100"
     >
       <div className="flex flex-wrap items-center gap-3 mb-4 w-full">
-        <span className="text-2xl font-bold text-blue-500 flex-shrink-0">#{number}</span>
+        <span className="text-2xl font-bold text-indigo-600 flex-shrink-0">#{number}</span>
         <h4 className="text-2xl font-bold text-gray-900 break-words flex-1 min-w-0">{title}</h4>
         {priority && (
           <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-sm font-semibold flex-shrink-0">
@@ -470,11 +532,11 @@ function ConceptCard({
         <div className="mt-6 w-full max-w-full overflow-visible">
           <button
             onClick={() => setShowExamples(!showExamples)}
-            className="w-full py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-md z-10 relative"
+            className="z-10 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white shadow-md shadow-indigo-600/20 transition-colors duration-200 hover:bg-indigo-700"
             type="button"
           >
-            <span className="text-black font-semibold">{showExamples ? "Hide Examples" : "See Examples"}</span>
-            <span className="text-xl text-black">{showExamples ? "▲" : "▼"}</span>
+            <span className="font-semibold text-white">{showExamples ? "Hide Examples" : "See Examples"}</span>
+            <span className="text-xl text-white">{showExamples ? "▲" : "▼"}</span>
           </button>
           {showExamples && (
             <div className="mt-4 w-full max-w-full flex flex-col space-y-4 overflow-hidden">

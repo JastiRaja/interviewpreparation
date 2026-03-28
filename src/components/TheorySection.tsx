@@ -24,14 +24,17 @@ export default function TheorySection({
   return (
     <div className="mt-4 space-y-4">
       <button
+        type="button"
         onClick={() => setExpanded(!expanded)}
-        className="w-full text-left flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg hover:from-blue-100 hover:to-purple-100 transition-colors"
+        className="flex w-full items-center justify-between rounded-xl border border-zinc-200/90 bg-zinc-50/80 p-3 text-left transition-colors hover:border-indigo-200 hover:bg-indigo-50/50 sm:p-4"
       >
-        <span className="font-semibold text-sm sm:text-base text-gray-900 flex items-center gap-2">
-          <span className="text-lg sm:text-xl">📖</span>
-          Theory & Interview Prep
+        <span className="flex items-center gap-2 text-sm font-semibold text-zinc-900 sm:text-base">
+          <span className="text-lg sm:text-xl" aria-hidden>
+            📖
+          </span>
+          Theory & interview prep
         </span>
-        <span className="text-gray-600 text-sm sm:text-base">{expanded ? "▼" : "▶"}</span>
+        <span className="text-sm text-zinc-500 sm:text-base">{expanded ? "▼" : "▶"}</span>
       </button>
 
       {expanded && (
@@ -39,70 +42,65 @@ export default function TheorySection({
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
-          className="space-y-3 sm:space-y-4 bg-white rounded-lg p-3 sm:p-4 md:p-6 border border-gray-200 w-full max-w-full overflow-hidden"
+          className="w-full max-w-full space-y-4 overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-sm sm:p-5 md:p-6"
         >
-          {/* What */}
           <div className="w-full">
-            <h5 className="font-bold text-base sm:text-lg mb-2 text-blue-600 flex items-center gap-2 flex-wrap">
-              <span>💡</span> <span>What is it?</span>
+            <h5 className="mb-2 flex flex-wrap items-center gap-2 text-base font-bold text-indigo-700 sm:text-lg">
+              <span aria-hidden>💡</span> <span>What is it?</span>
             </h5>
-            <p className="text-sm sm:text-base text-gray-700 leading-relaxed break-words">{what}</p>
+            <p className="text-sm leading-relaxed text-zinc-700 break-words sm:text-base">{what}</p>
           </div>
 
-          {/* Why */}
           {why && (
             <div className="w-full">
-              <h5 className="font-bold text-base sm:text-lg mb-2 text-green-600 flex items-center gap-2 flex-wrap">
-                <span>❓</span> <span>Why is it important?</span>
+              <h5 className="mb-2 flex flex-wrap items-center gap-2 text-base font-bold text-emerald-700 sm:text-lg">
+                <span aria-hidden>❓</span> <span>Why it matters</span>
               </h5>
-              <p className="text-sm sm:text-base text-gray-700 leading-relaxed break-words">{why}</p>
+              <p className="text-sm leading-relaxed text-zinc-700 break-words sm:text-base">{why}</p>
             </div>
           )}
 
-          {/* How */}
           {how && (
             <div className="w-full">
-              <h5 className="font-bold text-base sm:text-lg mb-2 text-purple-600 flex items-center gap-2 flex-wrap">
-                <span>⚙️</span> <span>How does it work?</span>
+              <h5 className="mb-2 flex flex-wrap items-center gap-2 text-base font-bold text-violet-700 sm:text-lg">
+                <span aria-hidden>⚙️</span> <span>How it works</span>
               </h5>
-              <p className="text-sm sm:text-base text-gray-700 leading-relaxed break-words">{how}</p>
+              <p className="text-sm leading-relaxed text-zinc-700 break-words sm:text-base">{how}</p>
             </div>
           )}
 
-          {/* Key Points */}
           {keyPoints && keyPoints.length > 0 && (
             <div className="w-full">
-              <h5 className="font-bold text-base sm:text-lg mb-2 text-orange-600 flex items-center gap-2 flex-wrap">
-                <span>🔑</span> <span>Key Points to Remember</span>
+              <h5 className="mb-2 flex flex-wrap items-center gap-2 text-base font-bold text-amber-700 sm:text-lg">
+                <span aria-hidden>🔑</span> <span>Key points</span>
               </h5>
               <ul className="space-y-2">
                 {keyPoints.map((point, index) => (
-                  <li key={index} className="flex items-start gap-2 text-sm sm:text-base text-gray-700 w-full">
-                    <span className="text-orange-500 mt-1 flex-shrink-0">•</span>
-                    <span className="break-words flex-1">{point}</span>
+                  <li key={index} className="flex w-full items-start gap-2 text-sm text-zinc-700 sm:text-base">
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" aria-hidden />
+                    <span className="flex-1 break-words">{point}</span>
                   </li>
                 ))}
               </ul>
             </div>
           )}
 
-          {/* Interview Questions */}
           {interviewQuestions && interviewQuestions.length > 0 && (
             <div className="w-full">
-              <h5 className="font-bold text-base sm:text-lg mb-2 sm:mb-3 text-red-600 flex items-center gap-2 flex-wrap">
-                <span>🎤</span> <span>Common Interview Questions</span>
+              <h5 className="mb-3 flex flex-wrap items-center gap-2 text-base font-bold text-rose-700 sm:text-lg">
+                <span aria-hidden>🎤</span> <span>Interview questions</span>
               </h5>
-              <div className="space-y-3 sm:space-y-4 w-full">
+              <div className="w-full space-y-3 sm:space-y-4">
                 {interviewQuestions.map((qa, index) => (
                   <div
                     key={index}
-                    className="bg-gray-50 rounded-lg p-3 sm:p-4 border-l-4 border-red-500 w-full overflow-hidden"
+                    className="w-full overflow-hidden rounded-xl border border-zinc-200/80 border-l-4 border-l-rose-500 bg-zinc-50/60 p-3 sm:p-4"
                   >
-                    <p className="font-semibold text-sm sm:text-base text-gray-900 mb-2 break-words">
+                    <p className="mb-2 text-sm font-semibold text-zinc-900 break-words sm:text-base">
                       Q: {qa.question}
                     </p>
-                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed break-words">
-                      <span className="font-semibold">A:</span> {qa.answer}
+                    <p className="text-sm leading-relaxed text-zinc-700 break-words sm:text-base">
+                      <span className="font-semibold text-zinc-800">A:</span> {qa.answer}
                     </p>
                   </div>
                 ))}
@@ -114,4 +112,3 @@ export default function TheorySection({
     </div>
   );
 }
-

@@ -22,25 +22,26 @@ export default function CodeExample({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden w-full max-w-full">
+    <div className="w-full max-w-full overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-sm ring-1 ring-zinc-100">
       {showTitle && (title || description) && (
-        <div className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-b border-gray-200 w-full">
+        <div className="w-full border-b border-zinc-200/80 px-4 py-3 sm:px-5 sm:py-4">
           {title && (
-            <h4 className="text-base sm:text-lg font-bold text-gray-900 mb-1 break-words">{title}</h4>
+            <h4 className="mb-1 text-base font-bold tracking-tight text-zinc-900 break-words sm:text-lg">{title}</h4>
           )}
           {description && (
-            <p className="text-xs sm:text-sm text-gray-600 break-words">{description}</p>
+            <p className="text-xs text-zinc-600 break-words sm:text-sm">{description}</p>
           )}
         </div>
       )}
       <div className="relative w-full">
         <button
+          type="button"
           onClick={copyToClipboard}
-          className="absolute top-2 right-2 sm:top-3 sm:right-3 md:top-4 md:right-4 px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-800 text-black text-xs rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-1 sm:gap-2 z-10"
+          className="absolute top-2 right-2 z-10 flex items-center gap-1.5 rounded-lg bg-zinc-800 px-2.5 py-1.5 text-xs font-medium text-white shadow-md transition-colors hover:bg-zinc-700 sm:top-3 sm:right-3 sm:px-3 sm:text-sm"
         >
           {copied ? (
             <>
-              <span>✓</span> <span className="hidden sm:inline">Copied!</span>
+              <span>✓</span> <span className="hidden sm:inline">Copied</span>
             </>
           ) : (
             <>
@@ -48,11 +49,18 @@ export default function CodeExample({
             </>
           )}
         </button>
-        <pre className="p-3 sm:p-4 md:p-6 bg-gray-900 text-gray-100 overflow-x-auto w-full max-w-full" style={{ maxWidth: '100%' }}>
-          <code className="text-xs sm:text-sm font-mono whitespace-pre overflow-x-auto block" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>{code}</code>
+        <pre
+          className="max-w-full overflow-x-auto bg-zinc-950 p-4 pt-12 font-mono text-sm text-zinc-100 sm:p-5 sm:pt-14 sm:text-[0.8125rem]"
+          style={{ maxWidth: "100%" }}
+        >
+          <code
+            className="block overflow-x-auto whitespace-pre font-mono"
+            style={{ wordBreak: "break-word", overflowWrap: "break-word" }}
+          >
+            {code}
+          </code>
         </pre>
       </div>
     </div>
   );
 }
-
