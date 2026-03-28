@@ -3,6 +3,7 @@ import CodeExample from "./CodeExample";
 import TheorySection from "./TheorySection";
 import CommandRecapPanel from "./CommandRecapPanel";
 import { typescriptCommandGroups } from "../data/techCommandRecaps";
+import ModuleMobileFAB from "./shared/ModuleMobileFAB";
 
 export default function TypeScriptModule() {
   // Initialize from URL or defaults
@@ -339,28 +340,8 @@ export default function TypeScriptModule() {
   };
 
   return (
-    <div className="relative flex min-h-0 w-full flex-1 flex-col gap-3 md:flex-row md:gap-4">
-      {/* Mobile Menu Button - Only show on larger mobile/tablet */}
-      <button
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="hidden sm:flex md:hidden fixed top-[72px] left-3 z-50 bg-indigo-600 text-white p-2 rounded-xl shadow-lg shadow-indigo-600/15 hover:bg-indigo-700 transition-colors"
-        aria-label="Toggle sidebar"
-      >
-        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-
-      {/* Mobile Floating Button for Small Screens */}
-      <button
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="sm:hidden fixed bottom-20 right-4 z-40 bg-indigo-600 text-white p-3 rounded-full shadow-xl shadow-indigo-600/20 transition-all hover:scale-110 active:scale-95 hover:bg-indigo-700"
-        aria-label="Toggle module menu"
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
+    <div className="relative flex min-h-0 w-full flex-1 flex-col gap-2 md:flex-row md:gap-3 lg:gap-4">
+      <ModuleMobileFAB onToggleSidebar={() => setSidebarOpen((o) => !o)} />
 
       {/* Mobile Overlay */}
       {sidebarOpen && (
@@ -375,8 +356,8 @@ export default function TypeScriptModule() {
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         fixed z-40 md:static md:z-auto
         top-[64px] sm:top-[72px] md:top-auto left-0
-        w-[280px] sm:w-64 md:w-64 shrink-0
-        bg-white/85 backdrop-blur-xl rounded-2xl border border-zinc-200/80 shadow-xl shadow-zinc-900/6 p-3 sm:p-4
+        w-[min(280px,88vw)] sm:w-52 md:w-52 lg:w-56 shrink-0
+        bg-white/85 backdrop-blur-xl rounded-xl border border-zinc-200/80 shadow-lg shadow-zinc-900/5 p-2.5 sm:p-3
         overflow-y-auto overflow-x-hidden overscroll-contain
         h-[calc(100dvh-64px-5.75rem)] sm:h-[calc(100dvh-72px-5.75rem)] md:h-auto md:max-h-none md:min-h-0 md:self-stretch
         transition-transform duration-300 ease-in-out
@@ -464,18 +445,8 @@ export default function TypeScriptModule() {
       </div>
 
       {/* Right: scrollable content + pinned section footer */}
-      <div className="relative mt-0 flex min-h-0 min-w-0 flex-1 flex-col md:mt-0">
-        {/* Mobile: View All Concepts Button - Always Visible */}
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="md:hidden fixed top-[72px] right-3 z-50 bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-3 py-2 rounded-full shadow-lg shadow-indigo-600/20 hover:shadow-xl transition-all text-xs sm:text-sm font-semibold flex items-center gap-1.5"
-          aria-label="View all concepts"
-        >
-          <span className="text-base">📚</span>
-          <span className="hidden sm:inline">All Concepts</span>
-        </button>
-
-        <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-0">
+      <div className="relative mt-0 flex min-h-0 min-w-0 flex-1 basis-0 flex-col md:mt-0">
+        <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-0 lg:min-w-0">
           <CommandRecapPanel
             id="typescript-command-recap"
             variant="blue"

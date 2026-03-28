@@ -42,13 +42,15 @@ export default function TheorySection({
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
-          className="w-full max-w-full space-y-4 overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-sm sm:p-5 md:p-6"
+          className="w-full max-w-full space-y-4 overflow-hidden rounded-xl border border-zinc-200/80 bg-white p-4 shadow-sm sm:rounded-2xl sm:p-5 md:p-6 lg:p-7"
         >
           <div className="w-full">
             <h5 className="mb-2 flex flex-wrap items-center gap-2 text-base font-bold text-indigo-700 sm:text-lg">
               <span aria-hidden>💡</span> <span>What is it?</span>
             </h5>
-            <p className="text-sm leading-relaxed text-zinc-700 break-words sm:text-base">{what}</p>
+            <p className="text-sm leading-relaxed text-zinc-700 break-words sm:text-base lg:text-[17px] lg:leading-relaxed">
+              {what}
+            </p>
           </div>
 
           {why && (
@@ -56,7 +58,9 @@ export default function TheorySection({
               <h5 className="mb-2 flex flex-wrap items-center gap-2 text-base font-bold text-emerald-700 sm:text-lg">
                 <span aria-hidden>❓</span> <span>Why it matters</span>
               </h5>
-              <p className="text-sm leading-relaxed text-zinc-700 break-words sm:text-base">{why}</p>
+              <p className="text-sm leading-relaxed text-zinc-700 break-words sm:text-base lg:text-[17px] lg:leading-relaxed">
+                {why}
+              </p>
             </div>
           )}
 
@@ -65,7 +69,9 @@ export default function TheorySection({
               <h5 className="mb-2 flex flex-wrap items-center gap-2 text-base font-bold text-violet-700 sm:text-lg">
                 <span aria-hidden>⚙️</span> <span>How it works</span>
               </h5>
-              <p className="text-sm leading-relaxed text-zinc-700 break-words sm:text-base">{how}</p>
+              <p className="text-sm leading-relaxed text-zinc-700 break-words sm:text-base lg:text-[17px] lg:leading-relaxed">
+                {how}
+              </p>
             </div>
           )}
 
