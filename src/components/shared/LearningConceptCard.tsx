@@ -115,7 +115,7 @@ export default function LearningConceptCard({
 
       {theory && (
         <div className="mb-6">
-          <TheorySection {...theory} />
+          <TheorySection {...theory} collapsible={false} />
         </div>
       )}
 

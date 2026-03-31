@@ -56,7 +56,7 @@ export function JavaConceptCard({
 
       {theory && (
         <div className="mb-6">
-          <TheorySection {...theory} />
+          <TheorySection {...theory} collapsible={false} />
         </div>
       )}
 

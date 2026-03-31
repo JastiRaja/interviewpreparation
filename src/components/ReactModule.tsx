@@ -2959,7 +2959,28 @@ function Parent() {
         />
       </ConceptCard>
 
-      <ConceptCard id="37" number={37} title="Code Splitting">
+      <ConceptCard
+        id="37"
+        number={37}
+        title="Code Splitting"
+        theory={{
+          what: "Code splitting means loading only the JavaScript needed for the current route or feature instead of one giant bundle. In React, `React.lazy` plus dynamic `import()` defers loading a module until it is rendered.",
+          why: "Smaller initial downloads improve Time to Interactive. Users on slow networks get usable UI faster; rarely visited screens do not bloat the main chunk.",
+          how: "Use `const Page = lazy(() => import('./Page'))` and wrap usage in `<Suspense fallback={...}>`. Bundlers (Vite/Webpack) emit separate async chunks. Route-based splitting is the most common pattern with React Router.",
+          keyPoints: [
+            "Each dynamic import typically becomes its own chunk",
+            "Provide a meaningful Suspense fallback (skeleton or spinner)",
+            "Prefetch routes on hover/link visibility for snappier navigation",
+          ],
+          interviewQuestions: [
+            {
+              question: "How does React.lazy relate to code splitting?",
+              answer:
+                "Code splitting is what your bundler does: it emits separate JS chunks (e.g. per route). `React.lazy(() => import('./Page'))` is how you *use* that split: the first time that component renders, React fetches that chunk, suspends, and shows your `<Suspense>` fallback until the module loads. So splitting creates the pieces; `lazy` + dynamic `import()` decide *when* a piece loads at runtime.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="Code Splitting"
           description="Load components only when needed"
@@ -2995,7 +3016,28 @@ function App() {
         />
       </ConceptCard>
 
-      <ConceptCard id="38" number={38} title="Lazy Loading">
+      <ConceptCard
+        id="38"
+        number={38}
+        title="Lazy Loading"
+        theory={{
+          what: "Lazy loading defers loading of code or media until needed: route chunks via `lazy()`, images with `loading=\"lazy\"`, or data when the user scrolls or opens a panel.",
+          why: "Reduces bandwidth and main-thread work up front. Especially important for image-heavy pages and large third-party libraries loaded only on specific screens.",
+          how: "Combine route-level `lazy()` with Suspense; for images use native lazy loading or intersection observers; for data use pagination or infinite scroll with careful loading states.",
+          keyPoints: [
+            "Lazy loading ≠ async rendering—still plan error and empty states",
+            "Test slow networks: Suspense fallbacks should not flash forever",
+            "SEO: lazy-loaded content may need SSR or pre-render for crawlers",
+          ],
+          interviewQuestions: [
+            {
+              question: "What is the difference between code splitting and lazy loading?",
+              answer:
+                "Code splitting is a build-time outcome: the bundler outputs multiple JS files (chunks). Lazy loading is a runtime policy: you defer loading something until it is needed—whether that is a code chunk (React.lazy + dynamic import()), an image (loading=\"lazy\"), or data (infinite scroll). Splitting gives you separate files; lazy loading decides when each file or asset is requested.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="Lazy Loading"
           description="Load resources on demand"
@@ -3021,7 +3063,27 @@ function Image({ src, alt }: { src: string; alt: string }) {
         />
       </ConceptCard>
 
-      <ConceptCard id="39" number={39} title="Suspense">
+      <ConceptCard
+        id="39"
+        number={39}
+        title="Suspense"
+        theory={{
+          what: "`Suspense` lets you declaratively show a fallback while a child component is not ready—typically a lazy-loaded component or (with React 18+ and concurrent features) async data sources integrated with the framework.",
+          why: "Avoids blank screens and centralizes loading UI. Nested Suspense boundaries can show granular fallbacks (page vs widget).",
+          how: "Wrap lazy components: `<Suspense fallback={<Spinner />}><Lazy /></Suspense>`. For data fetching, patterns depend on your stack (Relay, React Query with suspense, or `use()` in modern React).",
+          keyPoints: [
+            "Fallback should be fast to render (avoid heavy fallbacks)",
+            "Multiple Suspense boundaries improve perceived performance",
+            "Error boundaries are separate—Suspense does not catch render errors",
+          ],
+          interviewQuestions: [
+            {
+              question: "What does Suspense not do?",
+              answer: "It does not catch JavaScript errors in children—use Error Boundaries for that. It coordinates showing a fallback while children are suspended (loading), not failed.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="Suspense"
           description="Show fallback while loading"
@@ -3162,7 +3224,27 @@ function TestingConcepts({ activeConcept: _activeConcept }: { activeConcept: str
         <p className="text-violet-100">Testing React applications</p>
       </div>
 
-      <ConceptCard id="42" number={42} title="Jest">
+      <ConceptCard
+        id="42"
+        number={42}
+        title="Jest"
+        theory={{
+          what: "Jest is a JavaScript test runner with built-in assertions, mocking (`jest.fn`), timers, and snapshot testing. It is the default choice for many React projects and pairs with `@testing-library/react`.",
+          why: "Automated tests catch regressions during refactors, document expected behavior, and enable CI pipelines to block broken deploys.",
+          how: "Configure via `jest.config` or framework presets (`react-scripts`, Vite plugins). Write tests in `*.test.tsx`, run `jest` or `npm test`. Use `describe`/`it`/`test`, matchers like `toBe`, `toEqual`, and mock modules with `jest.mock`.",
+          keyPoints: [
+            "jsdom environment simulates a browser for RTL",
+            "Snapshot tests are brittle for UI—prefer user-centric queries",
+            "Colocate tests next to components or under `__tests__`",
+          ],
+          interviewQuestions: [
+            {
+              question: "What is the difference between `toBe` and `toEqual`?",
+              answer: "`toBe` uses strict equality (`===`) for primitives and same reference for objects. `toEqual` deep-compares object/array contents, so two different objects with the same shape pass.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="Jest Testing Framework"
           description="Install: npm install -D jest @testing-library/jest-dom"
@@ -3188,7 +3270,28 @@ test('calls onClick when clicked', () => {
         />
       </ConceptCard>
 
-      <ConceptCard id="43" number={43} title="React Testing Library" priority="🔥">
+      <ConceptCard
+        id="43"
+        number={43}
+        title="React Testing Library"
+        priority="🔥"
+        theory={{
+          what: "React Testing Library (RTL) renders components into a document and exposes queries (`getByRole`, `getByLabelText`) that mirror how users find elements—preferring accessibility roles over CSS selectors.",
+          why: "Tests that resemble real usage survive refactors better than tests that assert on implementation details (internal state, private methods).",
+          how: "Use `render(<App />)`, query with `screen`, interact with `user-event` (recommended) or `fireEvent`, and assert with `expect` from Jest. Async UI: `findBy*` and `waitFor`.",
+          keyPoints: [
+            "Query priority: role, label, placeholder, text, then test id",
+            "`userEvent` simulates realistic input better than raw `fireEvent`",
+            "Avoid testing implementation—test observable outcomes",
+          ],
+          interviewQuestions: [
+            {
+              question: "Why prefer `getByRole` over `getByTestId`?",
+              answer: "Roles reflect how assistive technologies expose elements, so tests align with accessibility. `data-test-id` is an escape hatch when no accessible name exists yet.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="React Testing Library"
           description="Test components like users interact with them"
@@ -3231,7 +3334,27 @@ test('user can type email and submit', async () => {
         />
       </ConceptCard>
 
-      <ConceptCard id="44" number={44} title="Unit vs Integration Tests">
+      <ConceptCard
+        id="44"
+        number={44}
+        title="Unit vs Integration Tests"
+        theory={{
+          what: "Unit tests verify a single function or small component in isolation, often with mocks. Integration tests exercise multiple units together—e.g. form + validation hook + API mock—still in jsdom. E2E tests drive a real browser (Cypress, Playwright).",
+          why: "The testing pyramid favors many fast unit tests, fewer integration tests, and a thin layer of E2E—balancing speed, flakiness, and confidence.",
+          how: "Mock network at the boundary (MSW). For React, RTL tests are often integration-style: render a subtree with providers (Router, QueryClient) and simulate user flows.",
+          keyPoints: [
+            "Over-mocking integration tests hides real failure modes",
+            "E2E is expensive—reserve for critical paths",
+            "Snapshot entire trees sparingly; assert behavior",
+          ],
+          interviewQuestions: [
+            {
+              question: "Where does an RTL form test usually sit in the pyramid?",
+              answer: "It is typically an integration test: multiple components and hooks cooperate without a real browser, faster than E2E but broader than a pure unit test of one pure function.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="Test Types"
           description="Different levels of testing"
@@ -3267,7 +3390,27 @@ function AdvancedConcepts({ activeConcept: _activeConcept }: { activeConcept: st
         <p className="text-rose-100">Advanced patterns and techniques</p>
       </div>
 
-      <ConceptCard id="45" number={45} title="Error Boundaries">
+      <ConceptCard
+        id="45"
+        number={45}
+        title="Error Boundaries"
+        theory={{
+          what: "An error boundary is a class component (or framework feature) that implements `static getDerivedStateFromError` and/or `componentDidCatch` to intercept errors thrown during render, lifecycle, or constructors in its subtree.",
+          why: "Without boundaries, a single thrown error can unmount the whole app. Boundaries let you show a fallback UI, log to monitoring, and keep the rest of the app running.",
+          how: "Wrap risky subtrees in a class boundary. Does not catch errors in event handlers, async code, or SSR—handle those with try/catch or error reporting utilities.",
+          keyPoints: [
+            "Cannot be a function component in the classic API—use a class or library",
+            "Does not catch errors inside the boundary’s own render",
+            "React 18+ error overlay in dev is separate from production behavior",
+          ],
+          interviewQuestions: [
+            {
+              question: "What errors won’t an error boundary catch?",
+              answer: "Errors in event handlers, `setTimeout`, server rendering, or errors thrown in the boundary itself—those need explicit try/catch or different patterns.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="Error Boundaries"
           description="Catch JavaScript errors in component tree"
@@ -3315,7 +3458,27 @@ function App() {
         />
       </ConceptCard>
 
-      <ConceptCard id="46" number={46} title="Higher Order Components (HOC)">
+      <ConceptCard
+        id="46"
+        number={46}
+        title="Higher Order Components (HOC)"
+        theory={{
+          what: "A higher-order component is a function `withFoo(Component)` that returns a new component wrapping the original, injecting props, behavior, or context.",
+          why: "Historically used for cross-cutting concerns (auth, i18n, analytics). Hooks often replace HOCs for new code, but libraries still expose HOC APIs.",
+          how: "Forward unrelated props with spread, set `displayName` for DevTools, and avoid creating wrapper components inside render (performance).",
+          keyPoints: [
+            "Static composition vs hooks: hooks reduce nesting hell",
+            "Ref forwarding needs `forwardRef` inside HOCs",
+            "Multiple HOCs hurt readability—prefer composition or hooks",
+          ],
+          interviewQuestions: [
+            {
+              question: "HOC vs custom hook?",
+              answer: "Hooks share stateful logic without wrapper components and avoid prop name collisions. HOCs still wrap the tree and are useful when wrapping class components or library patterns require it.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="HOC Pattern"
           description="Function that takes a component and returns a new component"
@@ -3340,7 +3503,27 @@ const ButtonWithLoading = withLoading(Button);
         />
       </ConceptCard>
 
-      <ConceptCard id="47" number={47} title="Render Props">
+      <ConceptCard
+        id="47"
+        number={47}
+        title="Render Props"
+        theory={{
+          what: "Render props pass a function as `children` or a named prop (`render`, `children`) so a parent can share state/logic while the caller decides the UI.",
+          why: "Inverts control: reusable logic (mouse tracking, data fetching) lives in one component; different UIs consume the same state via a function.",
+          how: "Define `props.children(state)` or `props.render(state)`. Watch for unnecessary re-renders; memoize callbacks if needed. Largely superseded by hooks for new code.",
+          keyPoints: [
+            "Also called “function as children” pattern",
+            "Can complicate the tree—hooks often simplify",
+            "Still seen in older libraries (React Router v5 patterns, etc.)",
+          ],
+          interviewQuestions: [
+            {
+              question: "Render prop vs controlled component?",
+              answer: "Controlled components lift state to parents via value/onChange props. Render props share internal state upward through a function—different mechanism, similar goal of customization.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="Render Props Pattern"
           description="Component that uses a function as a child"
@@ -3370,7 +3553,27 @@ function Mouse({ render }: { render: (mouse: { x: number; y: number }) => ReactN
         />
       </ConceptCard>
 
-      <ConceptCard id="48" number={48} title="Portals">
+      <ConceptCard
+        id="48"
+        number={48}
+        title="Portals"
+        theory={{
+          what: "`createPortal(children, domNode)` renders React children into a different part of the DOM while preserving React context and event bubbling behavior (events still follow React tree).",
+          why: "Modals, tooltips, and overlays often need to escape `overflow: hidden` or z-index stacking contexts from parents—portals attach to `document.body` or a dedicated root.",
+          how: "Call `createPortal` inside render; manage focus and ARIA (`role=\"dialog\"`, `aria-modal`) for accessibility. Pair with focus trap libraries for modals.",
+          keyPoints: [
+            "Portal content still participates in React reconciliation",
+            "CSS layout may need a dedicated layer (fixed positioning)",
+            "Unmount when closed to avoid orphaned DOM nodes",
+          ],
+          interviewQuestions: [
+            {
+              question: "Why use a portal for a modal?",
+              answer: "To render the modal markup at the end of the document (e.g. under `body`), avoiding clipping and z-index issues from parent containers while keeping React context available.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="Portals"
           description="Render children into a DOM node outside parent hierarchy"
@@ -3391,7 +3594,27 @@ function Modal({ children, isOpen }: { children: ReactNode; isOpen: boolean }) {
         />
       </ConceptCard>
 
-      <ConceptCard id="49" number={49} title="Refs & forwardRef">
+      <ConceptCard
+        id="49"
+        number={49}
+        title="Refs & forwardRef"
+        theory={{
+          what: "`useRef` holds a mutable box; attaching `ref` to a DOM element exposes the node. `forwardRef` lets function components receive a ref and pass it to a child DOM element or combine with `useImperativeHandle` for a curated API.",
+          why: "Refs escape React’s declarative model for focus management, measuring layout, animations, and integrating imperative libraries (maps, video).",
+          how: "Use callback refs when you need to measure on mount. `useImperativeHandle` exposes only chosen methods to parents—prefer declarative props when possible.",
+          keyPoints: [
+            "Changing `ref.current` does not trigger re-renders",
+            "Strict mode double-invokes effects in dev—watch ref side effects",
+            "Avoid overusing refs for state that should be in React state",
+          ],
+          interviewQuestions: [
+            {
+              question: "When is forwardRef required?",
+              answer: "When a parent needs a ref to a DOM element inside a function component child, the child must use `forwardRef` (or class `createRef`) to attach that ref—normal function components do not accept refs.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="forwardRef"
           description="Forward refs to child components"
@@ -3439,7 +3662,27 @@ function Form() {
         />
       </ConceptCard>
 
-      <ConceptCard id="50" number={50} title="Concurrent Rendering (React 18)">
+      <ConceptCard
+        id="50"
+        number={50}
+        title="Concurrent Rendering (React 18)"
+        theory={{
+          what: "React 18’s concurrent renderer can interrupt, resume, and abandon work to keep the UI responsive. Features include automatic batching, `startTransition`, `useTransition`, `useDeferredValue`, and Suspense improvements.",
+          why: "Heavy updates (large lists, expensive filtering) should not block typing or animations. Concurrent features mark updates urgent vs transition to prioritize user input.",
+          how: "Wrap non-urgent state updates in `startTransition(() => ...)`. `useDeferredValue` holds a lagged value for expensive derived rendering. Ensure your data libraries support concurrent mode.",
+          keyPoints: [
+            "`useTransition` returns `isPending` for loading UI",
+            "Batching applies to more event sources in React 18 (promises, native)",
+            "Strict Mode double-rendering helps surface unsafe side effects",
+          ],
+          interviewQuestions: [
+            {
+              question: "What does `useTransition` do?",
+              answer: "It lets you mark state updates as transitions—lower priority than urgent updates—so React can keep the UI responsive and show pending state via `isPending` while the transition completes.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="React 18 Features"
           description="Concurrent features and improvements"
@@ -3482,7 +3725,28 @@ function ToolingConcepts({ activeConcept: _activeConcept }: { activeConcept: str
         <p className="text-slate-100">Development tools and setup</p>
       </div>
 
-      <ConceptCard id="51" number={51} title="Vite / CRA" priority="🔥">
+      <ConceptCard
+        id="51"
+        number={51}
+        title="Vite / CRA"
+        priority="🔥"
+        theory={{
+          what: "Vite is a dev server and build tool that uses native ES modules during development for very fast cold start and HMR. Create React App (CRA) is a zero-config React template that historically used Webpack under the hood.",
+          why: "Choosing a toolchain affects iteration speed, bundle strategy, and how you configure TypeScript, env vars, and production output. New projects often prefer Vite or frameworks (Next.js) over CRA, which is in maintenance mode.",
+          how: "Scaffold with `npm create vite@latest` and pick a React template, or `npx create-react-app` for CRA. Vite uses Rollup (or esbuild) for production builds; CRA wraps Webpack. Both give you a dev server and build pipeline—migrate by aligning `index.html`, env prefixes, and public assets.",
+          keyPoints: [
+            "Vite: fast ESM-based dev, Rollup production bundle",
+            "CRA: familiar but slower feedback loop; Webpack config is ejected or hidden",
+            "Consider Next.js if you need routing, SSR, or file-based app structure",
+          ],
+          interviewQuestions: [
+            {
+              question: "Why might a team pick Vite over Create React App?",
+              answer: "Vite typically offers much faster dev server startup and HMR via native ESM, simpler configuration for many SPAs, and a modern plugin ecosystem. CRA is less actively evolved and often feels slower during development.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="Build Tools"
           description="Vite (modern, fast) vs Create React App (traditional)"
@@ -3507,7 +3771,27 @@ npx create-react-app my-app --template typescript
         />
       </ConceptCard>
 
-      <ConceptCard id="52" number={52} title="ESLint & Prettier">
+      <ConceptCard
+        id="52"
+        number={52}
+        title="ESLint & Prettier"
+        theory={{
+          what: "ESLint statically analyzes JavaScript/TypeScript to catch bugs, style regressions, and React-specific issues (hooks rules). Prettier is an opinionated formatter that rewrites code for consistent layout—line length, quotes, semicolons.",
+          why: "Linting prevents whole classes of bugs before runtime; formatting removes bike-shedding in code review. Together they keep large React codebases consistent and CI-friendly.",
+          how: "Add ESLint with `eslint`, `eslint-plugin-react`, `eslint-plugin-react-hooks`, and `@typescript-eslint` if using TS. Extend configs like `eslint-config-react-app` or flat configs (ESLint 9+). Run Prettier with `prettier` or ESLint integration; enable format-on-save in the editor.",
+          keyPoints: [
+            "Separate concerns: ESLint = correctness + rules; Prettier = formatting",
+            "`react-hooks/exhaustive-deps` catches stale closures in effects",
+            "Run both in CI (`npm run lint`) to block merges on violations",
+          ],
+          interviewQuestions: [
+            {
+              question: "ESLint vs Prettier—do they overlap?",
+              answer: "Prettier only formats whitespace and style; ESLint enforces semantics and patterns. Use `eslint-config-prettier` to turn off ESLint rules that conflict with Prettier so they complement each other.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="Code Quality Tools"
           description="Linting and formatting"
@@ -3537,7 +3821,27 @@ module.exports = {
         />
       </ConceptCard>
 
-      <ConceptCard id="53" number={53} title="Babel">
+      <ConceptCard
+        id="53"
+        number={53}
+        title="Babel"
+        theory={{
+          what: "Babel is a compiler (transpiler) that transforms modern JavaScript, JSX, and TypeScript syntax into JavaScript that older browsers or runtimes can execute. It applies presets (e.g. `@babel/preset-react`) and plugins for proposals.",
+          why: "JSX is not valid in browsers; Babel turns it into `React.createElement` calls. You also use Babel to target specific browser versions via `@babel/preset-env` or to enable experimental syntax.",
+          how: "Configure `.babelrc` or `babel.config.js` with presets for React, env, and optionally TypeScript. Many bundlers integrate Babel; Vite often uses esbuild for transpilation in dev but can still use Babel plugins when needed.",
+          keyPoints: [
+            "JSX transform: classic vs automatic (React 17+ new JSX runtime)",
+            "Babel is slower than esbuild for huge projects—toolchains choose per need",
+            "Polyfills are separate (e.g. `@babel/polyfill` / core-js) from syntax",
+          ],
+          interviewQuestions: [
+            {
+              question: "What does Babel do with JSX?",
+              answer: "The `@babel/preset-react` preset compiles JSX into `React.createElement` calls (or the automatic JSX runtime import), so the browser receives plain JavaScript function calls instead of JSX syntax.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="Babel"
           description="JavaScript compiler (transpiles modern JS to older versions)"
@@ -3559,7 +3863,27 @@ module.exports = {
         />
       </ConceptCard>
 
-      <ConceptCard id="54" number={54} title="Webpack">
+      <ConceptCard
+        id="54"
+        number={54}
+        title="Webpack"
+        theory={{
+          what: "Webpack is a module bundler: it builds a dependency graph from your entry points, applies loaders (TS, CSS, images), and emits optimized bundles (often split into chunks) for the browser.",
+          why: "Browsers don’t natively resolve `import` from `node_modules` or arbitrary file types the way Node does. Bundlers unify assets, enable code splitting, tree-shaking, and long-term caching via hashed filenames.",
+          how: "Define `entry`, `output`, `module.rules` for loaders, and `plugins` for HTML, env injection, etc. CRA hides this; ejecting or using a custom template exposes full config. Alternatives: Vite, esbuild, Parcel, Rspack.",
+          keyPoints: [
+            "Loaders transform files; plugins orchestrate the build",
+            "Code splitting: dynamic `import()` and `SplitChunksPlugin`",
+            "Dev experience: CRA/Webpack can be slower than Vite for large apps",
+          ],
+          interviewQuestions: [
+            {
+              question: "What is the role of a loader in Webpack?",
+              answer: "Loaders transform individual modules on import—e.g. `ts-loader` compiles TypeScript, `css-loader` resolves CSS imports. They run right-to-left in a chain as configured in `module.rules`.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="Webpack"
           description="Module bundler (used by CRA)"
@@ -3589,7 +3913,28 @@ module.exports = {
         />
       </ConceptCard>
 
-      <ConceptCard id="55" number={55} title="TypeScript with React" priority="🔥">
+      <ConceptCard
+        id="55"
+        number={55}
+        title="TypeScript with React"
+        priority="🔥"
+        theory={{
+          what: "TypeScript adds static types to JavaScript. With React, you type props, state, hooks, context, event handlers, and refs so components fail at compile time instead of with vague runtime errors.",
+          why: "Large React apps benefit from autocomplete, safer refactors, and clearer contracts between components. Teams catch integration bugs earlier and document intent via types.",
+          how: "Use `jsx: react-jsx` or `react` in `tsconfig.json`, enable `strict` for maximum safety. Define `interface`/`type` for props; use `React.FC` sparingly or plain function components with typed props. Use `@types/react` and `@types/react-dom`.",
+          keyPoints: [
+            "Discriminated unions model props for polymorphic components",
+            "`children` should be typed explicitly (`ReactNode`, etc.)",
+            "Event types: `React.ChangeEvent<HTMLInputElement>` for inputs",
+          ],
+          interviewQuestions: [
+            {
+              question: "How do you type a React component’s props?",
+              answer: "Define an interface or type (e.g. `type ButtonProps = { label: string; onClick: () => void }`) and annotate the component: `function Button(props: ButtonProps)` or destructure with `{ label, onClick }: ButtonProps`.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="TypeScript Setup"
           description="This project uses TypeScript!"
@@ -3629,7 +3974,27 @@ function ArchitectureConcepts({ activeConcept: _activeConcept }: { activeConcept
         <p className="text-amber-100">Design patterns and best practices</p>
       </div>
 
-      <ConceptCard id="56" number={56} title="Component Design Patterns">
+      <ConceptCard
+        id="56"
+        number={56}
+        title="Component Design Patterns"
+        theory={{
+          what: "Common React patterns include container/presentational (smart vs dumb), compound components, render props, and higher-order components. Each splits data/logic from UI or enables flexible composition.",
+          why: "Patterns reduce duplication, clarify responsibilities, and make testing easier—containers can be integration-tested, presentational components snapshot-tested.",
+          how: "Pick the smallest pattern that fits: hooks often replace containers; compound components for related subcomponents (Tabs, Menu); render props or children-as-function for inversion of control.",
+          keyPoints: [
+            "Hooks reduced need for class-based containers",
+            "Avoid HOC chains that obscure prop types",
+            "Compound components share implicit state via context",
+          ],
+          interviewQuestions: [
+            {
+              question: "What is the container/presentational pattern?",
+              answer: "Containers fetch data and manage state; presentational components receive props and render UI. It separates side effects from pure rendering, though hooks can colocate logic in custom hooks instead.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="Design Patterns"
           description="Common component patterns"
@@ -3661,7 +4026,27 @@ Tabs.Panel = ({ children }: { children: ReactNode }) => <div>{children}</div>;
         />
       </ConceptCard>
 
-      <ConceptCard id="57" number={57} title="Separation of Concerns">
+      <ConceptCard
+        id="57"
+        number={57}
+        title="Separation of Concerns"
+        theory={{
+          what: "Separation of concerns means UI, data fetching, routing, and domain logic live in distinct modules so each can change independently.",
+          why: "React apps grow fast; mixing API calls, validation, and markup in one file makes refactors risky and tests heavy.",
+          how: "Use folders for `components`, `hooks`, `services`/`api`, `features`, and `utils`. Co-locate tests and styles next to components when it helps. Extract custom hooks for reusable stateful logic.",
+          keyPoints: [
+            "Feature folders scale better than type-only folders for large teams",
+            "Keep components thin—push I/O to hooks or service modules",
+            "Shared UI vs feature-specific components",
+          ],
+          interviewQuestions: [
+            {
+              question: "How do custom hooks help separation of concerns?",
+              answer: "They extract stateful logic (fetching, subscriptions, form state) out of components into reusable functions, leaving components focused on rendering and event wiring.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="Separation of Concerns"
           description="Organize code by responsibility"
@@ -3697,7 +4082,27 @@ function UserCard({ userId }: { userId: number }) {
         />
       </ConceptCard>
 
-      <ConceptCard id="58" number={58} title="Atomic Design">
+      <ConceptCard
+        id="58"
+        number={58}
+        title="Atomic Design"
+        theory={{
+          what: "Atomic Design organizes UI into atoms (buttons, inputs), molecules (search field), organisms (header), templates (layouts), and pages (real content). It’s a mental model for scalable design systems.",
+          why: "Teams reuse small pieces consistently, document them in Storybook, and align with designers using the same vocabulary.",
+          how: "Not every app needs strict five layers—often atoms/organisms/pages suffice. Co-locate tokens (colors, spacing) and document props. Avoid premature abstraction: extract atoms when duplication is real.",
+          keyPoints: [
+            "Works well with component libraries and Storybook",
+            "Don’t over-split—too many tiny atoms increase indirection",
+            "Templates vs pages: data vs concrete instances",
+          ],
+          interviewQuestions: [
+            {
+              question: "What is an organism in Atomic Design?",
+              answer: "A relatively complex UI section built from molecules and atoms—e.g. a site header combining logo, nav links, and search—without being a full page.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="Atomic Design"
           description="Component hierarchy: Atoms → Molecules → Organisms"
@@ -3742,7 +4147,27 @@ export function Header() {
         />
       </ConceptCard>
 
-      <ConceptCard id="59" number={59} title="Folder Structure">
+      <ConceptCard
+        id="59"
+        number={59}
+        title="Folder Structure"
+        theory={{
+          what: "Folder structure is how you group components, routes, hooks, and assets. Common styles: by type (`components/`, `hooks/`), by feature (`features/auth/`), or hybrid.",
+          why: "Clear structure shortens onboarding, reduces import path chaos, and helps code ownership in teams.",
+          how: "Start simple; split when a folder has too many files. Use index barrels sparingly (they can hurt tree-shaking). Keep route-related code near the router if using file-based routing (Next.js).",
+          keyPoints: [
+            "Feature folders colocate everything for a domain",
+            "Barrel files: `export * from './Button'`—watch circular deps",
+            "Tests: `*.test.tsx` next to source or in `__tests__`",
+          ],
+          interviewQuestions: [
+            {
+              question: "Feature-based vs layer-based structure?",
+              answer: "Layer-based groups by technical type (all components together). Feature-based groups by product area (auth, billing) with its own components, hooks, and API—better for large apps and team boundaries.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="Project Structure"
           description="Organize files logically"
@@ -3785,7 +4210,27 @@ src/
         />
       </ConceptCard>
 
-      <ConceptCard id="60" number={60} title="Reusable Components">
+      <ConceptCard
+        id="60"
+        number={60}
+        title="Reusable Components"
+        theory={{
+          what: "Reusable components expose a small, flexible API (props, variants, composition) so multiple screens can share behavior and styling without copy-paste.",
+          why: "Duplication drifts over time; a shared Button, Modal, or DataTable enforces UX consistency and fixes bugs once.",
+          how: "Design for composition (`children`, slots), sensible defaults, and controlled vs uncontrolled patterns where appropriate. Document props in Storybook. Avoid props that encode one-off business rules.",
+          keyPoints: [
+            "Variant APIs: `variant=\"primary\"` vs many boolean props",
+            "Forward refs when wrapping DOM elements",
+            "Accessibility: reuse patterns for focus trap, ARIA on shared widgets",
+          ],
+          interviewQuestions: [
+            {
+              question: "When should you not reuse a component?",
+              answer: "When two use cases diverge in behavior or accessibility needs and the prop surface becomes a mess of conditionals—sometimes splitting into two simpler components is clearer than one mega-component.",
+            },
+          ],
+        }}
+      >
         <CodeExample
           title="Reusable Components"
           description="Build components that can be used in multiple places"
@@ -3886,7 +4331,7 @@ function ConceptCard({
       {/* Theory Section - Always Visible */}
       {theory && (
         <div className="mb-6">
-          <TheorySection {...theory} />
+          <TheorySection {...theory} collapsible={false} />
         </div>
       )}
       

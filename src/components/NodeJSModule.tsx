@@ -4,6 +4,7 @@ import TheorySection from "./TheorySection";
 import CommandRecapPanel from "./CommandRecapPanel";
 import { nodeCommandGroups } from "../data/techCommandRecaps";
 import ModuleMobileFAB from "./shared/ModuleMobileFAB";
+import { nodeJsSections } from "../data/nodeModuleSections";
 
 export default function NodeJSModule() {
   // Initialize from URL or defaults
@@ -46,106 +47,13 @@ export default function NodeJSModule() {
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
-  const sections = [
-    { 
-      id: "core", 
-      title: "Core Fundamentals", 
-      icon: "🔰", 
-      count: "1-7",
-      concepts: Array.from({ length: 7 }, (_, i) => ({ id: String(i + 1), title: `Concept ${i + 1}`, number: i + 1 }))
-    },
-    { 
-      id: "modules", 
-      title: "Modules & Packages", 
-      icon: "📦", 
-      count: "8-16",
-      concepts: Array.from({ length: 9 }, (_, i) => ({ id: String(i + 8), title: `Concept ${i + 8}`, number: i + 8 }))
-    },
-    { 
-      id: "web", 
-      title: "Web & Networking", 
-      icon: "🌐", 
-      count: "17-23",
-      concepts: Array.from({ length: 7 }, (_, i) => ({ id: String(i + 17), title: `Concept ${i + 17}`, number: i + 17 }))
-    },
-    { 
-      id: "async", 
-      title: "Async Programming", 
-      icon: "⚡", 
-      count: "24-29",
-      concepts: Array.from({ length: 6 }, (_, i) => ({ id: String(i + 24), title: `Concept ${i + 24}`, number: i + 24 }))
-    },
-    { 
-      id: "filesystem", 
-      title: "File System & Streams", 
-      icon: "📁", 
-      count: "30-36",
-      concepts: Array.from({ length: 7 }, (_, i) => ({ id: String(i + 30), title: `Concept ${i + 30}`, number: i + 30 }))
-    },
-    { 
-      id: "events", 
-      title: "Event-Driven Architecture", 
-      icon: "🧠", 
-      count: "37-39",
-      concepts: Array.from({ length: 3 }, (_, i) => ({ id: String(i + 37), title: `Concept ${i + 37}`, number: i + 37 }))
-    },
-    { 
-      id: "express", 
-      title: "Express.js", 
-      icon: "🚀", 
-      count: "40-45",
-      concepts: Array.from({ length: 6 }, (_, i) => ({ id: String(i + 40), title: `Concept ${i + 40}`, number: i + 40 }))
-    },
-    { 
-      id: "databases", 
-      title: "Databases", 
-      icon: "🗄️", 
-      count: "46-52",
-      concepts: Array.from({ length: 7 }, (_, i) => ({ id: String(i + 46), title: `Concept ${i + 46}`, number: i + 46 }))
-    },
-    { 
-      id: "security", 
-      title: "Authentication & Security", 
-      icon: "🔐", 
-      count: "53-59",
-      concepts: Array.from({ length: 7 }, (_, i) => ({ id: String(i + 53), title: `Concept ${i + 53}`, number: i + 53 }))
-    },
-    { 
-      id: "testing", 
-      title: "Testing & Debugging", 
-      icon: "🧪", 
-      count: "60-65",
-      concepts: Array.from({ length: 6 }, (_, i) => ({ id: String(i + 60), title: `Concept ${i + 60}`, number: i + 60 }))
-    },
-    { 
-      id: "performance", 
-      title: "Performance & Scalability", 
-      icon: "⚙️", 
-      count: "66-72",
-      concepts: Array.from({ length: 7 }, (_, i) => ({ id: String(i + 66), title: `Concept ${i + 66}`, number: i + 66 }))
-    },
-    { 
-      id: "devops", 
-      title: "DevOps & Deployment", 
-      icon: "🐳", 
-      count: "73-77",
-      concepts: Array.from({ length: 5 }, (_, i) => ({ id: String(i + 73), title: `Concept ${i + 73}`, number: i + 73 }))
-    },
-    { 
-      id: "architecture", 
-      title: "Architecture & Best Practices", 
-      icon: "🧱", 
-      count: "78-82",
-      concepts: Array.from({ length: 5 }, (_, i) => ({ id: String(i + 78), title: `Concept ${i + 78}`, number: i + 78 }))
-    },
-    { 
-      id: "advanced", 
-      title: "Advanced Node.js Concepts", 
-      icon: "🌍", 
-      count: "83-88",
-      concepts: Array.from({ length: 6 }, (_, i) => ({ id: String(i + 83), title: `Concept ${i + 83}`, number: i + 83 }))
-    },
-  ];
+  const sections = nodeJsSections.map((s) => ({
+    id: s.id,
+    title: s.title,
+    icon: s.icon,
+    count: s.count,
+    concepts: s.concepts.map((c) => ({ ...c })),
+  }));
 
   const getFirstConceptIdForSection = (sectionId: string) => {
     const section = sections.find((item) => item.id === sectionId);
@@ -6739,7 +6647,7 @@ function ConceptCard({
       {/* Theory Section - Always Visible */}
       {theory && (
         <div className="mb-6">
-          <TheorySection {...theory} />
+          <TheorySection {...theory} collapsible={false} />
         </div>
       )}
       

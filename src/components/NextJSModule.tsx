@@ -57,7 +57,7 @@ function ConceptCard({
       {/* Theory Section - Always Visible */}
       {theory && (
         <div className="mb-6">
-          <TheorySection {...theory} />
+          <TheorySection {...theory} collapsible={false} />
         </div>
       )}
       

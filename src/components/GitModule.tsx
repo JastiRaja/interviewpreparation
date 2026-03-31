@@ -3,6 +3,7 @@ import CodeExample from "./CodeExample";
 import TheorySection from "./TheorySection";
 import GitCommandReference from "./GitCommandReference";
 import ModuleMobileFAB from "./shared/ModuleMobileFAB";
+import { gitSections } from "../data/gitModuleSections";
 
 export default function GitModule() {
   // Initialize from URL or defaults
@@ -45,50 +46,13 @@ export default function GitModule() {
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
-  const sections = [
-    { 
-      id: "basics", 
-      title: "Git Basics", 
-      icon: "🔰", 
-      count: "1-10",
-      concepts: Array.from({ length: 10 }, (_, i) => ({ id: String(i + 1), title: `Concept ${i + 1}`, number: i + 1 }))
-    },
-    { 
-      id: "branching", 
-      title: "Branching & Merging", 
-      icon: "🌿", 
-      count: "11-18",
-      concepts: Array.from({ length: 8 }, (_, i) => ({ id: String(i + 11), title: `Concept ${i + 11}`, number: i + 11 }))
-    },
-    { 
-      id: "remote", 
-      title: "Remote Repositories", 
-      icon: "☁️", 
-      count: "19-25",
-      concepts: Array.from({ length: 7 }, (_, i) => ({ id: String(i + 19), title: `Concept ${i + 19}`, number: i + 19 }))
-    },
-    { 
-      id: "collaboration", 
-      title: "Collaboration", 
-      icon: "👥", 
-      count: "26-32",
-      concepts: Array.from({ length: 7 }, (_, i) => ({ id: String(i + 26), title: `Concept ${i + 26}`, number: i + 26 }))
-    },
-    { 
-      id: "advanced", 
-      title: "Advanced Git", 
-      icon: "⚡", 
-      count: "33-40",
-      concepts: Array.from({ length: 8 }, (_, i) => ({ id: String(i + 33), title: `Concept ${i + 33}`, number: i + 33 }))
-    },
-    { 
-      id: "github", 
-      title: "GitHub Features", 
-      icon: "🐙", 
-      count: "41-48",
-      concepts: Array.from({ length: 8 }, (_, i) => ({ id: String(i + 41), title: `Concept ${i + 41}`, number: i + 41 }))
-    },
-  ];
+  const sections = gitSections.map((s) => ({
+    id: s.id,
+    title: s.title,
+    icon: s.icon,
+    count: s.count,
+    concepts: s.concepts.map((c) => ({ ...c })),
+  }));
 
   const getFirstConceptIdForSection = (sectionId: string) => {
     const section = sections.find((item) => item.id === sectionId);
@@ -2942,7 +2906,7 @@ function ConceptCard({
       {/* Theory Section - Always Visible */}
       {theory && (
         <div className="mb-6">
-          <TheorySection {...theory} />
+          <TheorySection {...theory} collapsible={false} />
         </div>
       )}
       
