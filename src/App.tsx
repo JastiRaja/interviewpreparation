@@ -15,6 +15,15 @@ import CachingModule from "./components/CachingModule";
 import SecurityMindsetModule from "./components/SecurityMindsetModule";
 import NosqlModule from "./components/NosqlModule";
 import ObservabilityModule from "./components/ObservabilityModule";
+import SystemDesignModule from "./components/SystemDesignModule";
+import DsaModule from "./components/DsaModule";
+import FrontendEngModule from "./components/FrontendEngModule";
+import CloudModule from "./components/CloudModule";
+import BehavioralModule from "./components/BehavioralModule";
+import AiEngineeringModule from "./components/AiEngineeringModule";
+import GolangModule from "./components/GolangModule";
+import PythonModule from "./components/PythonModule";
+import CsFundamentalsModule from "./components/CsFundamentalsModule";
 import QuickCommandReference from "./components/QuickCommandReference";
 import GlobalSearch from "./components/GlobalSearch";
 
@@ -34,7 +43,16 @@ type Module =
   | "caching"
   | "security"
   | "nosql"
-  | "observability";
+  | "observability"
+  | "systemdesign"
+  | "dsa"
+  | "frontendeng"
+  | "cloud"
+  | "behavioral"
+  | "ai"
+  | "golang"
+  | "python"
+  | "csfundamentals";
 
 interface NavItem {
   id: Module;
@@ -157,6 +175,69 @@ const navItems: NavItem[] = [
     icon: "📈",
     description: "Logs, metrics, traces, SLOs, and correlation IDs",
   },
+  {
+    id: "systemdesign",
+    title: "System Design",
+    short: "SysDesign",
+    icon: "🏗️",
+    description: "Scalability, load balancing, message queues, Saga, and case studies",
+  },
+  {
+    id: "dsa",
+    title: "DSA Patterns",
+    short: "DSA",
+    icon: "🧩",
+    description: "14 LeetCode patterns, Big-O reference, and algorithmic templates",
+  },
+  {
+    id: "frontendeng",
+    title: "FE Architecture",
+    short: "FE Arch",
+    icon: "📐",
+    description: "Web Vitals, TanStack Query, RTL, MSW, Playwright, and a11y",
+  },
+  {
+    id: "cloud",
+    title: "Cloud & IaC",
+    short: "Cloud",
+    icon: "☁️",
+    description: "AWS S3, Lambda Serverless, VPC, IAM, and Terraform IaC",
+  },
+  {
+    id: "behavioral",
+    title: "Behavioral & Lead",
+    short: "Lead",
+    icon: "👔",
+    description: "STAR method, outage post-mortems, tech debt, and leadership",
+  },
+  {
+    id: "ai",
+    title: "AI & GenAI",
+    short: "AI Eng",
+    icon: "🤖",
+    description: "RAG architectures, vector DBs (HNSW, pgvector), LLM tool calling, SSE streaming",
+  },
+  {
+    id: "golang",
+    title: "Go (Golang)",
+    short: "Go",
+    icon: "🐹",
+    description: "GMP concurrency scheduler, channels, worker pools, escape analysis, sync primitives",
+  },
+  {
+    id: "python",
+    title: "Python Backend",
+    short: "Python",
+    icon: "🐍",
+    description: "GIL internals, asyncio event loops, memory generators, and FastAPI + Pydantic v2",
+  },
+  {
+    id: "csfundamentals",
+    title: "CS Fundamentals",
+    short: "CS Fund",
+    icon: "💻",
+    description: "TCP lifecycle, congestion control, DNS/TLS 1.3, virtual memory paging, deadlocks",
+  },
 ];
 
 const learnItems = navItems.filter((item) => item.id !== "home");
@@ -195,6 +276,15 @@ export default function LearningApp() {
       "security",
       "nosql",
       "observability",
+      "systemdesign",
+      "dsa",
+      "frontendeng",
+      "cloud",
+      "behavioral",
+      "ai",
+      "golang",
+      "python",
+      "csfundamentals",
     ];
     if (validModules.includes(segment as Module)) {
       return segment as Module;
@@ -279,6 +369,24 @@ export default function LearningApp() {
         return <NosqlModule />;
       case "observability":
         return <ObservabilityModule />;
+      case "systemdesign":
+        return <SystemDesignModule />;
+      case "dsa":
+        return <DsaModule />;
+      case "frontendeng":
+        return <FrontendEngModule />;
+      case "cloud":
+        return <CloudModule />;
+      case "behavioral":
+        return <BehavioralModule />;
+      case "ai":
+        return <AiEngineeringModule />;
+      case "golang":
+        return <GolangModule />;
+      case "python":
+        return <PythonModule />;
+      case "csfundamentals":
+        return <CsFundamentalsModule />;
       default:
         return <HomePage onNavigate={onNavigate} />;
     }
@@ -439,16 +547,15 @@ function HomePage({ onNavigate }: { onNavigate?: (moduleId: Module) => void }) {
             Ship better interviews
           </h2>
           <p className="text-base leading-relaxed text-zinc-600 sm:text-lg">
-            Practice frontend frameworks, backend runtimes, Java/Spring, SQL, HTTP/APIs, auth, containers, caching,
-            security, NoSQL, observability, and more—with clear explanations, copy-ready examples, and interview-style
-            Q&A.
+            Master full-stack engineering, DSA coding patterns, system design architectures, cloud infrastructure,
+            testing, and leadership—with clear theory, copy-ready code, and interview-style Q&amp;A.
           </p>
         </motion.div>
       </section>
 
       <section>
         <h3 className="mb-4 text-lg font-semibold text-zinc-900 sm:mb-6 sm:text-xl">Choose a track</h3>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {learnItems.map((item, index) => (
             <motion.button
               key={item.id}
@@ -519,6 +626,33 @@ function HomePage({ onNavigate }: { onNavigate?: (moduleId: Module) => void }) {
           </li>
           <li className="flex gap-2">
             <span aria-hidden>✓</span> Logs, metrics, traces, correlation IDs, and SLOs
+          </li>
+          <li className="flex gap-2">
+            <span aria-hidden>✓</span> System Design: scalability, load balancing, Kafka, Saga, and case studies
+          </li>
+          <li className="flex gap-2">
+            <span aria-hidden>✓</span> DSA: 14 LeetCode patterns, Two Pointers, Sliding Window, Trees, DP, and Big-O
+          </li>
+          <li className="flex gap-2">
+            <span aria-hidden>✓</span> FE Architecture: Core Web Vitals, TanStack Query, RTL, MSW, Playwright, and a11y
+          </li>
+          <li className="flex gap-2">
+            <span aria-hidden>✓</span> Cloud &amp; IaC: AWS S3 Presigned URLs, Lambda Serverless, VPC, IAM, and Terraform
+          </li>
+          <li className="flex gap-2">
+            <span aria-hidden>✓</span> Behavioral: STAR framework, outage post-mortems, conflict resolution, and leadership
+          </li>
+          <li className="flex gap-2">
+            <span aria-hidden>✓</span> AI Engineering: RAG pipelines, Vector DBs (HNSW, pgvector), LLM Tool Calling, and SSE Streaming
+          </li>
+          <li className="flex gap-2">
+            <span aria-hidden>✓</span> Go (Golang): GMP Scheduler, channels, worker pools, escape analysis, and sync/atomic
+          </li>
+          <li className="flex gap-2">
+            <span aria-hidden>✓</span> Python: GIL internals &amp; free-threading, asyncio TaskGroups, generators, and FastAPI v2
+          </li>
+          <li className="flex gap-2">
+            <span aria-hidden>✓</span> CS Fundamentals: TCP 3-way handshake, congestion control, DNS/TLS 1.3, paging, and deadlocks
           </li>
         </ul>
       </section>

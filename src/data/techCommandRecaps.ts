@@ -279,3 +279,158 @@ export const typescriptCommandGroups: CommandRecapGroup[] = [
     ],
   },
 ];
+
+export const dockerCommandGroups: CommandRecapGroup[] = [
+  {
+    title: "Images & build",
+    rows: [
+      { command: "docker build -t app:v1 .", purpose: "Build an image from a Dockerfile in current directory." },
+      { command: "docker build --no-cache -t app:v1 .", purpose: "Force clean build without cached layers." },
+      { command: "docker images", purpose: "List all local images." },
+      { command: "docker rmi <image_id>", purpose: "Remove local image." },
+      { command: "docker tag app:v1 registry/app:v1", purpose: "Tag image for remote registry." },
+      { command: "docker push registry/app:v1", purpose: "Push image to container registry." },
+    ],
+  },
+  {
+    title: "Containers & lifecycle",
+    rows: [
+      { command: "docker run -d -p 3000:3000 --name web app:v1", purpose: "Run container in background with port forwarding." },
+      { command: "docker run -it --rm ubuntu bash", purpose: "Run interactive container, remove on exit." },
+      { command: "docker ps", purpose: "List running containers." },
+      { command: "docker ps -a", purpose: "List all containers (running and stopped)." },
+      { command: "docker logs -f --tail 100 web", purpose: "Stream container logs (last 100 lines)." },
+      { command: "docker exec -it web /bin/sh", purpose: "Open shell inside running container." },
+      { command: "docker stop web && docker rm web", purpose: "Stop and delete container." },
+    ],
+  },
+  {
+    title: "Docker Compose",
+    rows: [
+      { command: "docker compose up -d --build", purpose: "Build and start all services in detached mode." },
+      { command: "docker compose down -v", purpose: "Stop services and delete named volumes." },
+      { command: "docker compose logs -f <service>", purpose: "Tail logs for a specific compose service." },
+      { command: "docker compose exec <service> sh", purpose: "Execute shell in a compose service." },
+    ],
+  },
+  {
+    title: "Cleanup & disk management",
+    rows: [
+      { command: "docker system df", purpose: "Show Docker disk usage." },
+      { command: "docker system prune -a --volumes", purpose: "Prune all unused containers, networks, images, and volumes." },
+    ],
+  },
+];
+
+export const k8sCommandGroups: CommandRecapGroup[] = [
+  {
+    title: "Cluster status & resources",
+    rows: [
+      { command: "kubectl get pods,svc,deploy -o wide", purpose: "List pods, services, and deployments with node IPs." },
+      { command: "kubectl get all -n <namespace>", purpose: "List all resources in a given namespace." },
+      { command: "kubectl describe pod <pod-name>", purpose: "Inspect pod events, crash loops, and resource limits." },
+      { command: "kubectl top pods / kubectl top nodes", purpose: "View CPU & memory utilization (Metrics Server required)." },
+    ],
+  },
+  {
+    title: "Logs & debugging",
+    rows: [
+      { command: "kubectl logs -f <pod-name> -c <container>", purpose: "Stream container logs." },
+      { command: "kubectl logs --previous <pod-name>", purpose: "Print logs for previous failed container instance." },
+      { command: "kubectl exec -it <pod-name> -- /bin/sh", purpose: "Open interactive shell inside pod." },
+      { command: "kubectl port-forward svc/<service> 8080:80", purpose: "Forward local port 8080 to cluster service port 80." },
+    ],
+  },
+  {
+    title: "Deployments & rollouts",
+    rows: [
+      { command: "kubectl apply -f ./k8s/", purpose: "Apply all declarative YAML manifests in directory." },
+      { command: "kubectl rollout status deployment/<name>", purpose: "Watch deployment rollout progress." },
+      { command: "kubectl rollout restart deployment/<name>", purpose: "Trigger rolling restart without config change." },
+      { command: "kubectl rollout undo deployment/<name>", purpose: "Rollback deployment to previous revision." },
+      { command: "kubectl scale deployment/<name> --replicas=5", purpose: "Imperatively scale pod replica count." },
+    ],
+  },
+];
+
+export const redisCommandGroups: CommandRecapGroup[] = [
+  {
+    title: "Key-Value & Strings",
+    rows: [
+      { command: "SET user:1 '{\"name\":\"Alex\"}' EX 3600", purpose: "Set key with TTL expiration in seconds." },
+      { command: "GET user:1", purpose: "Get value by key." },
+      { command: "INCR rate:user:1", purpose: "Atomic integer increment (great for rate limiting)." },
+      { command: "EXPIRE user:1 60", purpose: "Set expiration timeout on existing key." },
+      { command: "TTL user:1", purpose: "Check remaining time to live in seconds (-1: none, -2: expired)." },
+    ],
+  },
+  {
+    title: "Hashes & Data Structures",
+    rows: [
+      { command: "HSET user:100 name \"Alice\" role \"admin\"", purpose: "Store field-value pairs inside a Redis Hash." },
+      { command: "HGETALL user:100", purpose: "Retrieve all fields and values from a hash." },
+      { command: "LPUSH queue:jobs \"job_123\" && RPOP queue:jobs", purpose: "List-based FIFO job queue push & pop." },
+      { command: "SADD session:active \"sess_1\" && SISMEMBER session:active \"sess_1\"", purpose: "Set add and membership check O(1)." },
+      { command: "ZADD leaderboard 1500 \"user_a\" && ZREVRANGE leaderboard 0 9 WITHSCORES", purpose: "Sorted Set add & top 10 rank query." },
+    ],
+  },
+  {
+    title: "Server & diagnostics",
+    rows: [
+      { command: "redis-cli -h localhost -p 6379 ping", purpose: "Health-check Redis instance (returns PONG)." },
+      { command: "INFO memory", purpose: "Inspect allocated memory and fragmentation ratio." },
+      { command: "MONITOR", purpose: "Stream all live queries received by Redis in real-time (dev only)." },
+    ],
+  },
+];
+
+export const linuxCommandGroups: CommandRecapGroup[] = [
+  {
+    title: "Process & port inspection",
+    rows: [
+      { command: "lsof -i :3000 || netstat -tulnp | grep 3000", purpose: "Find PID listening on specific port." },
+      { command: "ps aux | grep node", purpose: "List all running Node.js processes with PID and memory." },
+      { command: "kill -9 <PID>", purpose: "Force kill process by PID." },
+      { command: "htop / top", purpose: "Interactive real-time CPU & memory monitor." },
+    ],
+  },
+  {
+    title: "Network & HTTP testing",
+    rows: [
+      { command: "curl -iv -X POST http://api.com/v1 -H \"Content-Type: application/json\" -d '{\"k\":\"v\"}'", purpose: "Verbose HTTP POST request inspection." },
+      { command: "curl -s http://api.com/data | jq '.items[0]'", purpose: "Pipe JSON API response into jq for parsing." },
+      { command: "ping -c 4 google.com", purpose: "Send 4 ICMP echo packets to test network latency." },
+      { command: "nc -zv 127.0.0.1 5432", purpose: "Netcat port connectivity test." },
+    ],
+  },
+  {
+    title: "File search & log analysis",
+    rows: [
+      { command: "tail -f -n 100 /var/log/app.log", purpose: "Follow live log file output." },
+      { command: "grep -rn \"ERROR\" ./src", purpose: "Recursive search for string across files with line numbers." },
+      { command: "find . -name \"*.log\" -mtime +7 -delete", purpose: "Find and delete log files older than 7 days." },
+      { command: "df -h && free -m", purpose: "Show disk space and available RAM in human-readable units." },
+    ],
+  },
+];
+
+export const sqlCommandGroups: CommandRecapGroup[] = [
+  {
+    title: "PostgreSQL administration",
+    rows: [
+      { command: "psql -U postgres -d mydb -h localhost", purpose: "Connect to Postgres interactive shell." },
+      { command: "\\dt+ / \\d+ table_name", purpose: "List tables with sizes / describe table columns & indexes." },
+      { command: "EXPLAIN (ANALYZE, BUFFERS) SELECT * FROM users WHERE email = 'a@b.com';", purpose: "Show actual query execution plan, timings, and cache hits." },
+      { command: "pg_dump -U postgres -d mydb -F c -b -v -f mydb.dump", purpose: "Create compressed custom binary database backup." },
+      { command: "pg_restore -U postgres -d mydb -v mydb.dump", purpose: "Restore custom format database backup." },
+    ],
+  },
+  {
+    title: "MySQL & General SQL",
+    rows: [
+      { command: "mysql -u root -p -e \"SHOW PROCESSLIST;\"", purpose: "List active client connections and slow queries." },
+      { command: "CREATE INDEX CONCURRENTLY idx_users_email ON users(email);", purpose: "Build index without locking table writes (Postgres)." },
+      { command: "VACUUM ANALYZE table_name;", purpose: "Reclaim dead tuples and update query planner statistics." },
+    ],
+  },
+];

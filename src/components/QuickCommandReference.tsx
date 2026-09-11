@@ -240,6 +240,84 @@ db.orders.aggregate([
   { $limit: 20 }
 ]);`,
   },
+  {
+    id: "docker",
+    title: "Docker & Docker Compose",
+    summary: "Build images, run containers, stream logs, manage compose stacks.",
+    code: `# Build and run container
+docker build -t my-app:latest .
+docker run -d -p 3000:3000 --name web my-app:latest
+
+# List & inspect
+docker ps -a
+docker logs -f --tail 100 web
+docker exec -it web /bin/sh
+
+# Docker compose
+docker compose up -d --build
+docker compose down -v
+docker compose logs -f
+
+# System cleanup
+docker system prune -a --volumes`,
+  },
+  {
+    id: "kubernetes",
+    title: "Kubernetes (kubectl)",
+    summary: "Inspect cluster pods, stream logs, port-forward, and manage deployments.",
+    code: `# Inspect workloads
+kubectl get pods,svc,deploy -o wide
+kubectl describe pod <pod-name>
+
+# Logs and debugging
+kubectl logs -f <pod-name> -c <container>
+kubectl exec -it <pod-name> -- /bin/sh
+kubectl port-forward svc/<service> 8080:80
+
+# Declarative manifests & rollouts
+kubectl apply -f ./k8s/
+kubectl rollout restart deployment/<deployment-name>
+kubectl rollout status deployment/<deployment-name>`,
+  },
+  {
+    id: "redis",
+    title: "Redis CLI",
+    summary: "Key-value caching, TTLs, Hashes, Lists, and diagnostics in redis-cli.",
+    code: `# Connect & string commands
+redis-cli -h localhost -p 6379
+SET user:100 '{"id":100,"name":"Alex"}' EX 3600
+GET user:100
+TTL user:100
+INCR rate:limit:user:100
+
+# Hashes and Lists
+HSET user:profile name "Alex" role "admin"
+HGETALL user:profile
+LPUSH job:queue "job_id_1" && RPOP job:queue
+
+# Server memory & diagnostics
+INFO memory
+MONITOR`,
+  },
+  {
+    id: "linux-cli",
+    title: "Linux CLI & Network debugging",
+    summary: "Process inspection, listening ports, curl HTTP testing, and log analysis.",
+    code: `# Port & process inspection
+lsof -i :3000 || netstat -tulnp | grep 3000
+ps aux | grep node
+kill -9 <PID>
+
+# Network & API debugging
+curl -iv -X POST http://api.com/v1 -H "Content-Type: application/json" -d '{"key":"val"}'
+curl -s http://api.com/data | jq '.items[0]'
+nc -zv 127.0.0.1 5432
+
+# File search & log streaming
+tail -f -n 100 /var/log/app.log
+grep -rn "ERROR" ./src
+df -h && free -m`,
+  },
 ];
 
 export default function QuickCommandReference() {
